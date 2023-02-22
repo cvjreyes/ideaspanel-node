@@ -25,9 +25,10 @@ exports.login = async (req, res) => {
     if (!email) return send(res, false, "Please, fill all fields");
     const validatedEmail = validator.validate(email);
     if (!validatedEmail) return send(res, false, "Invalid credentials");
-    // login
-    if (await getUserService("email", `'${email}'`))
-      return loginService(res, email);
+    const user = await getUserService("email", `'${email}'`);
+    if (user)
+      // login
+      return loginService(res, email, user.id);
     // signup
     return signupService(res, email);
   } catch (err) {

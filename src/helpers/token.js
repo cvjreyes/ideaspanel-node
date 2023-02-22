@@ -4,8 +4,8 @@ dotenv.config();
 
 const { pool } = require("../../config/db");
 
-exports.generateToken = (key, value) => {
-  const token = jwt.sign({ [key]: value }, process.env.NODE_TOKEN_SECRET, {
+exports.generateToken = (email) => {
+  const token = jwt.sign({ email }, process.env.NODE_TOKEN_SECRET, {
     expiresIn: "1d",
   });
   // relpace dots bc url will redirect to another page
@@ -13,6 +13,6 @@ exports.generateToken = (key, value) => {
   return token.split(".").join("!");
 };
 
-exports.saveTokenIntoDB = async (id, token) => {
-  pool.query("UPDATE users SET token = ? WHERE id = ?", [token, id]);
+exports.saveTokenIntoDB = async (email, token) => {
+  pool.query("UPDATE users SET token = ? WHERE email = ?", [token, email]);
 };

@@ -25,8 +25,8 @@ exports.signupService = async (res, email) => {
   if (!regex.exec(email))
     return send(res, false, "Your email must belong to Technip Energies");
   const user_id = await this.createUserService(email);
-  const token = generateToken("id", user_id);
-  await saveTokenIntoDB(user_id, token);
+  const token = generateToken(email);
+  await saveTokenIntoDB(email, token);
   const link = generateLink("create_password", user_id, token);
   const ok = await sendEmail(
     email,
@@ -42,11 +42,15 @@ exports.signupService = async (res, email) => {
 exports.loginService = async (res, email) => {
   try {
     // create token
-    const token = generateToken("email", email);
-    console.log(token);
+    const token = generateToken(email);
+    await saveTokenIntoDB(email, token);
     // create link
+    const link = generateLink("log_in", email, token);
     // send email
-    return send(res, true, "Please, check your email to log in");
+    const ok = await sendEmail(email, "IdeasPanel: Log In", "login", link);
+    if (ok) {
+      return send(res, true, "Please, check your email to log in");
+    } else throw new Error("Sending email failed");
   } catch (err) {
     console.error(err);
     send(res, false, err);
