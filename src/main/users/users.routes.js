@@ -4,4 +4,6 @@ const router = require("express").Router(),
 
 router.get("/get_user_info", checkAuth, controller.getUserInfo);
 
+router.post("/login", controller.login);
+
 module.exports = router;
