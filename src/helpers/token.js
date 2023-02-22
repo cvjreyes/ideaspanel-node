@@ -4,8 +4,8 @@ dotenv.config();
 
 const { pool } = require("../../config/db");
 
-exports.generateToken = (user_id) => {
-  const token = jwt.sign({ user_id }, process.env.NODE_TOKEN_SECRET, {
+exports.generateToken = (key, value) => {
+  const token = jwt.sign({ [key]: value }, process.env.NODE_TOKEN_SECRET, {
     expiresIn: "1d",
   });
   // relpace dots bc url will redirect to another page
