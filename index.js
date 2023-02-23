@@ -28,6 +28,7 @@ app.use("/users", apiLimiter);
 
 // ROUTES
 app.use("/users", require("./src/main/users/users.routes"));
+app.use("/ideas", require("./src/main/ideas/ideas.routes"));
 
 // NODE-CRON
 // require("./src/node_cron/cron")();
