@@ -1,3 +1,4 @@
+const path = require("path");
 require("dotenv").config();
 const express = require("express");
 const { rateLimit } = require("express-rate-limit");
@@ -46,3 +47,5 @@ app.use("*", (req, res) => {
 app.listen(process.env.NODE_DB_PORT, () => {
   console.info(`Server is running on port: ${process.env.NODE_DB_PORT}`);
 });
+
+app.get("/", express.static(path.join(__dirname, "/media")));
