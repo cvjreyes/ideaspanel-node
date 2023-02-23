@@ -6,4 +6,6 @@ router.get("/get_user_info", checkAuth, controller.getUserInfo);
 
 router.post("/login", controller.login);
 
+router.post("/validate_credentials", controller.validateCredentials);
+
 module.exports = router;

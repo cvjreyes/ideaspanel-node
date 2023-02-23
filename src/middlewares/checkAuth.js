@@ -5,9 +5,10 @@ require("dotenv").config();
 exports.checkAuth = (req, res, next) => {
   const token = req.headers?.authorization;
   if (!token) return send(res, false, "Unauthorized");
-  jwt.verify(token, process.env.NODE_TOKEN_SECRET, (err, { id: user_id }) => {
+  const verifyToken = token.split("!").join(".");
+  jwt.verify(verifyToken, process.env.NODE_TOKEN_SECRET, (err, { email }) => {
     if (err) return send(res, false, "Invalid token");
-    req.user_id = user_id;
+    req.email = email;
     next();
   });
 };
