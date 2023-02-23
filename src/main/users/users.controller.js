@@ -1,6 +1,9 @@
 var validator = require("email-validator");
+const { generateLink } = require("../../helpers/emails");
 
 const { send } = require("../../helpers/send");
+const { generateToken, saveTokenIntoDB } = require("../../helpers/token");
+const { sendEmail } = require("../emails/emails.services");
 const {
   getUserService,
   signupService,
@@ -26,11 +29,14 @@ exports.login = async (req, res) => {
     const validatedEmail = validator.validate(email);
     if (!validatedEmail) return send(res, false, "Invalid credentials");
     const user = await getUserService("email", `'${email}'`);
-    if (user)
-      // login
-      return loginService(res, email, user.id);
-    // signup
-    return signupService(res, email);
+    const user_id = !user ? await signupService(res, email) : user.id;
+    const token = generateToken(email);
+    await saveTokenIntoDB(email, token);
+    const link = generateLink("log_in", user_id, token);
+    const ok = await sendEmail(email, "IdeasPanel: Log In", "login", link);
+    if (ok) {
+      return send(res, true, "User registered successfully");
+    } else throw new Error("Sending email failed");
   } catch (err) {
     console.error(err);
     send(res, false, err);
