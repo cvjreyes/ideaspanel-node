@@ -4,6 +4,8 @@ const router = require("express").Router(),
 
 router.get("/get_user_info", checkAuth, controller.getUserInfo);
 
+router.get("/profile/:id", checkAuth, controller.getProfileById);
+
 router.post("/login", controller.login);
 
 router.post("/validate_credentials", controller.validateCredentials);
