@@ -35,7 +35,7 @@ exports.login = async (req, res) => {
     const link = generateLink("log_in", user_id, token);
     const ok = await sendEmail(email, "IdeasPanel: Log In", "login", link);
     if (ok) {
-      return send(res, true, "User registered successfully");
+      return send(res, true, `User ${email} registered successfully`);
     } else throw new Error("Sending email failed");
   } catch (err) {
     console.error(err);
