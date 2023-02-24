@@ -8,7 +8,7 @@ const {
   validateToken,
 } = require("../../helpers/token");
 const { sendEmail } = require("../emails/emails.services");
-const { getUserService, signupService, getProfileById } = require("./users.service");
+const { getUserService, signupService } = require("./users.service");
 
 exports.getUserInfo = async (req, res) => {
   const { email } = req;
@@ -25,14 +25,13 @@ exports.getUserInfo = async (req, res) => {
 exports.getProfileById = async (req, res) => {
   const { id } = req.params;
   try {
-    const profile = await getProfileById(id);
+    const profile = await getUserService("id", id);
     return send(res, true, profile);
   } catch (err) {
     console.error(err);
     return send(res, false, err);
   }
 };
-
 
 exports.login = async (req, res) => {
   const { email } = req.body;
