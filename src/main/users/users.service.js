@@ -10,6 +10,15 @@ exports.getUserService = async (key, value) => {
   return user[0];
 };
 
+exports.getProfileById = async (id) => {
+  const [profile] = await pool.query(
+    "SELECT * FROM users WHERE id = ?",
+    id
+  );
+  console.log("profile: ", profile);
+  return profile;
+};
+
 exports.createUserService = async (email) => {
   const [created] = await pool.query(
     "INSERT INTO users (email, name) VALUES (?, ?)",
