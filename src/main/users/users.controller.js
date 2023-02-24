@@ -22,6 +22,17 @@ exports.getUserInfo = async (req, res) => {
   }
 };
 
+exports.getProfileById = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const profile = await getUserService("id", id);
+    return send(res, true, profile);
+  } catch (err) {
+    console.error(err);
+    return send(res, false, err);
+  }
+};
+
 exports.login = async (req, res) => {
   const { email } = req.body;
   try {
