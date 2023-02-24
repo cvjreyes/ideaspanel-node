@@ -31,6 +31,8 @@ app.use("/users", apiLimiter);
 app.use("/users", require("./src/main/users/users.routes"));
 app.use("/ideas", require("./src/main/ideas/ideas.routes"));
 
+app.use("/images", express.static("images"));
+
 // NODE-CRON
 // require("./src/node_cron/cron")();
 
@@ -47,5 +49,3 @@ app.use("*", (req, res) => {
 app.listen(process.env.NODE_DB_PORT, () => {
   console.info(`Server is running on port: ${process.env.NODE_DB_PORT}`);
 });
-
-app.get("/", express.static(path.join(__dirname, "/media")));
