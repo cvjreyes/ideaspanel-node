@@ -50,7 +50,7 @@ exports.login = async (req, res) => {
     } else throw new Error("Sending email failed");
   } catch (err) {
     console.error(err);
-    send(res, false, err);
+    return send(res, false, err);
   }
 };
 
