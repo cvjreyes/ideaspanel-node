@@ -5,6 +5,8 @@ const {
   insertIdeaService,
   addImageService,
   getSomeIdeasService,
+  getDraftsService,
+  getIdeaService,
 } = require("./ideas.service");
 
 const storage = multer.diskStorage({
@@ -26,6 +28,39 @@ exports.getSome = async (req, res) => {
   try {
     const ideas = await getSomeIdeasService(page);
     send(res, true, ideas);
+  } catch (err) {
+    console.error(err);
+    send(res, false, err);
+  }
+};
+
+exports.toApprove = async (req, res) => {
+  try {
+    const idea = await getOldestIdeaToApproveService();
+    send(res, true, idea);
+  } catch (err) {
+    console.error(err);
+    send(res, false, err);
+  }
+};
+
+exports.getDrafts = async (req, res) => {
+  const { email } = req;
+  try {
+    const user = await getUserService("email", email);
+    const drafts = await getDraftsService(user.id);
+    send(res, true, drafts);
+  } catch (err) {
+    console.error(err);
+    send(res, false, err);
+  }
+};
+
+exports.getIdeaInfo = async (req, res) => {
+  const { idea_id } = req.params;
+  try {
+    const idea = await getIdeaService(idea_id);
+    send(res, true, idea);
   } catch (err) {
     console.error(err);
     send(res, false, err);

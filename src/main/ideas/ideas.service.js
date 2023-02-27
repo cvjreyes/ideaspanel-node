@@ -2,10 +2,29 @@ const pool = require("../../../config/db");
 
 exports.getSomeIdeasService = async (page) => {
   const [results] = await pool.query(
-    "SELECT * FROM ideas LIMIT 20 OFFSET ?",
+    "SELECT * FROM ideas WHERE published = 1 LIMIT 20 OFFSET ?",
     page * 20
   );
   return results;
+};
+
+exports.getOldestIdeaToApproveService = async () => {
+  const [idea] = await pool.query(
+    "SELECT * FROM ideas WHERE sent_to_validate = 1 ORDER BY sent_to_validate_at LIMIT 1  "
+  );
+};
+
+exports.getDraftsService = async (user_id) => {
+  const [drafts] = await pool.query(
+    "SELECT * FROM ideas WHERE draft = 1 AND user_id = ?",
+    user_id
+  );
+  return drafts;
+};
+
+exports.getIdeaService = async (idea_id) => {
+  const [idea] = await pool.query("SELECT * FROM ideas WHERE id = ?", idea_id);
+  return idea;
 };
 
 exports.insertIdeaService = async (user_id, form) => {
