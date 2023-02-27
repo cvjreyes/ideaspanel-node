@@ -2,7 +2,7 @@ const pool = require("../../../config/db");
 
 exports.getSomeIdeasService = async (page) => {
   const [results] = await pool.query(
-    "SELECT * FROM ideas WHERE published = 1 LIMIT 20 OFFSET ?",
+    "SELECT * FROM ideas LIMIT 20 OFFSET ?",
     page * 20
   );
   return results;
@@ -37,4 +37,11 @@ exports.insertIdeaService = async (user_id, form) => {
 
 exports.addImageService = async (id, image) => {
   await pool.query("UPDATE ideas SET image = ? WHERE id = ?", [image, id]);
+};
+
+exports.updateIdeaService = async (idea, publish) => {
+  await pool.query(
+    "UPDATE ideas SET title = ?, description = ?, published = ?, draft = ? WHERE id = ?",
+    [idea.title, idea.description, publish, !publish, idea.id]
+  );
 };
