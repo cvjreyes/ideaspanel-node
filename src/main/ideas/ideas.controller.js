@@ -1,7 +1,11 @@
 const multer = require("multer");
 const { getUserService } = require("../users/users.service");
 const { send } = require("../../helpers/send");
-const { insertIdeaService, addImageService } = require("./ideas.service");
+const {
+  insertIdeaService,
+  addImageService,
+  getSomeIdeasService,
+} = require("./ideas.service");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -12,10 +16,21 @@ const storage = multer.diskStorage({
   },
 });
 
-const upload = multer({
+const uploadFn = multer({
   storage: storage,
   limits: { fieldSize: "256mb" },
 }).single("file");
+
+exports.getSome = async (req, res) => {
+  const { page } = req.params;
+  try {
+    const ideas = await getSomeIdeasService(page);
+    send(res, true, ideas);
+  } catch (err) {
+    console.error(err);
+    send(res, false, err);
+  }
+};
 
 exports.upload = async (req, res) => {
   const { form } = req.body;
@@ -32,7 +47,7 @@ exports.upload = async (req, res) => {
 exports.uploadImage = async (req, res) => {
   const { idea_id } = req.params;
   try {
-    upload(req, res, async function (err) {
+    uploadFn(req, res, async function (err) {
       if (err instanceof multer.MulterError) {
         send(res, false, err);
       } else if (err) {
