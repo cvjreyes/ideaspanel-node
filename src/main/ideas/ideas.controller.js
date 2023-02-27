@@ -7,6 +7,8 @@ const {
   getSomeIdeasService,
   getDraftsService,
   getIdeaService,
+  updateIdeaService,
+  getOldestIdeaToApproveService,
 } = require("./ideas.service");
 
 const storage = multer.diskStorage({
@@ -93,6 +95,17 @@ exports.uploadImage = async (req, res) => {
       await addImageService(idea_id, newImage);
       send(res, true);
     });
+  } catch (err) {
+    console.error(err);
+    send(res, false, err);
+  }
+};
+
+exports.update = async (req, res) => {
+  const { form, publish } = req.body;
+  try {
+    await updateIdeaService(form, publish);
+    send(res, true);
   } catch (err) {
     console.error(err);
     send(res, false, err);
