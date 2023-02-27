@@ -12,8 +12,8 @@ exports.getUserService = async (key, value) => {
 
 exports.createUserService = async (email) => {
   const [created] = await pool.query(
-    "INSERT INTO users (email, name) VALUES (?, ?)",
-    [email, getName(email)]
+    "INSERT INTO users (email, name, profile_pic) VALUES (?, ?, ?)",
+    [email, getName(email), `${process.env.NODE_SERVER_URL}/images/default.png`]
   );
   return created.insertId;
 };

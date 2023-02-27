@@ -1,4 +1,3 @@
-const path = require("path");
 require("dotenv").config();
 const express = require("express");
 const { rateLimit } = require("express-rate-limit");
@@ -12,6 +11,9 @@ app.use(require("cors")());
 
 // SECURITY
 app.use(require("helmet")());
+app.use(
+  require("helmet").crossOriginResourcePolicy({ policy: "cross-origin" })
+); // for images
 app.disable("x-powered-by");
 app.use(require("hpp")()); // middleware to protect against HTTP Parameter Pollution attacks
 // adding limiter to /user requests to stop brute force attacks
