@@ -1,3 +1,4 @@
+const path = require("path");
 require("dotenv").config();
 const express = require("express");
 const { rateLimit } = require("express-rate-limit");
@@ -29,6 +30,8 @@ app.use("/users", apiLimiter);
 // ROUTES
 app.use("/users", require("./src/main/users/users.routes"));
 app.use("/ideas", require("./src/main/ideas/ideas.routes"));
+
+app.use("/images", express.static("images"));
 
 // NODE-CRON
 // require("./src/node_cron/cron")();

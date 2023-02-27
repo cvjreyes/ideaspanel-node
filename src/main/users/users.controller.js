@@ -8,7 +8,7 @@ const {
   validateToken,
 } = require("../../helpers/token");
 const { sendEmail } = require("../emails/emails.services");
-const { getUserService, signupService, getProfileById } = require("./users.service");
+const { getUserService, signupService } = require("./users.service");
 
 exports.getUserInfo = async (req, res) => {
   const { email } = req;
@@ -25,14 +25,13 @@ exports.getUserInfo = async (req, res) => {
 exports.getProfileById = async (req, res) => {
   const { id } = req.params;
   try {
-    const profile = await getProfileById(id);
+    const profile = await getUserService("id", id);
     return send(res, true, profile);
   } catch (err) {
     console.error(err);
     return send(res, false, err);
   }
 };
-
 
 exports.login = async (req, res) => {
   const { email } = req.body;
@@ -47,7 +46,7 @@ exports.login = async (req, res) => {
     const link = generateLink("log_in", user_id, token);
     const ok = await sendEmail(email, "IdeasPanel: Log In", "login", link);
     if (ok) {
-      return send(res, true, "User registered successfully");
+      return send(res, true, `User ${email} registered successfully`);
     } else throw new Error("Sending email failed");
   } catch (err) {
     console.error(err);
