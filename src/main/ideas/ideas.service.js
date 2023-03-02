@@ -1,3 +1,5 @@
+const fs = require("fs");
+require("dotenv").config();
 const pool = require("../../../config/db");
 
 exports.getSomeIdeasService = async (page) => {
@@ -10,7 +12,7 @@ exports.getSomeIdeasService = async (page) => {
 
 exports.getOldestIdeaToApproveService = async (user_id) => {
   const [idea] = await pool.query(
-    "SELECT * FROM ideas WHERE sent_to_validate = 1 AND user_id != ? ORDER BY sent_to_validate_at LIMIT 1",
+    "SELECT * FROM ideas WHERE sent_to_validate = 1 ORDER BY sent_to_validate_at LIMIT 1",
     user_id
   );
   return idea;
@@ -46,4 +48,16 @@ exports.updateIdeaService = async (idea, publish) => {
     "UPDATE ideas SET title = ?, description = ?, sent_to_validate = ?, draft = ?, sent_to_validate_at = CURRENT_TIMESTAMP WHERE id = ?",
     [idea.title, idea.description, publish, !publish, idea.id]
   );
+};
+
+exports.deleteIdeaImgService = async (idea_id) => {
+  const idea = await this.getIdeaService(idea_id);
+  const path =
+    "." + idea[0].image.substring(process.env.NODE_SERVER_URL.length);
+  console.log("path: ", path);
+  fs.unlink(path, function (err) {
+    if (err) console.error(err);
+    else console.log("success");
+  });
+  await pool.query("UPDATE ideas SET image = null WHERE id = ?", idea_id);
 };
