@@ -4,7 +4,7 @@ const router = require("express").Router(),
 
 router.get("/get_some/:page", checkAuth, controller.getSome);
 
-router.get("/to_approve", checkAuth, controller.toApprove);
+router.get("/to_approve/:user_id", checkAuth, controller.toApprove);
 
 router.get("/get_drafts", checkAuth, controller.getDrafts);
 
