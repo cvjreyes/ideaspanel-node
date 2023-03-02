@@ -8,11 +8,17 @@ const {
   validateToken,
 } = require("../../helpers/token");
 const { sendEmail } = require("../emails/emails.services");
-const { getUserService, signupService, getAllUsersService, getUserIdeaService } = require("./users.service");
+const {
+  getUserService,
+  signupService,
+  getAllUsersService,
+  getUserIdeaService,
+} = require("./users.service");
 
 exports.getUserInfo = async (req, res) => {
   const { email } = req;
   try {
+    if (!email) return send(res, false, "Invalid token");
     const user = await getUserService("email", email);
     if (!user) return send(res, false, "Invalid token");
     return send(res, true, user);
