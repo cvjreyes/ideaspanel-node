@@ -39,3 +39,10 @@ exports.insertIdeaService = async (user_id, form) => {
 exports.addImageService = async (id, image) => {
   await pool.query("UPDATE ideas SET image = ? WHERE id = ?", [image, id]);
 };
+
+exports.updateIdeaService = async (idea, publish) => {
+  await pool.query(
+    "UPDATE ideas SET title = ?, description = ?, published = ?, draft = ? WHERE id = ?",
+    [idea.title, idea.description, publish, !publish, idea.id]
+  );
+};
