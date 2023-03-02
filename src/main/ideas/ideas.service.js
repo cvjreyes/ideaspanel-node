@@ -8,9 +8,10 @@ exports.getSomeIdeasService = async (page) => {
   return results;
 };
 
-exports.getOldestIdeaToApproveService = async () => {
+exports.getOldestIdeaToApproveService = async (user_id) => {
   const [idea] = await pool.query(
-    "SELECT * FROM ideas WHERE sent_to_validate = 1 ORDER BY sent_to_validate_at LIMIT 1  "
+    "SELECT * FROM ideas WHERE sent_to_validate = 1 AND user_id != ? ORDER BY sent_to_validate_at LIMIT 1",
+    user_id
   );
   return idea;
 };
