@@ -10,7 +10,7 @@ exports.getSomeIdeasService = async (page) => {
 
 exports.getOldestIdeaToApproveService = async () => {
   const [idea] = await pool.query(
-    "SELECT * FROM ideas WHERE sent_to_validate = 1 ORDER BY sent_to_validate_at LIMIT 1  "
+    "SELECT * FROM ideas WHERE sent_to_validate = 1 ORDER BY sent_to_validate_at LIMIT 1"
   );
   return idea;
 };
@@ -42,7 +42,7 @@ exports.addImageService = async (id, image) => {
 
 exports.updateIdeaService = async (idea, publish) => {
   await pool.query(
-    "UPDATE ideas SET title = ?, description = ?, published = ?, draft = ? WHERE id = ?",
+    "UPDATE ideas SET title = ?, description = ?, sent_to_validate = ?, draft = ?, sent_to_validate_at = CURRENT_TIMESTAMP WHERE id = ?",
     [idea.title, idea.description, publish, !publish, idea.id]
   );
 };
