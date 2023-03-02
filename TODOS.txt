@@ -1,5 +1,5 @@
 TODO:
-- add checking token expiracy https://stackoverflow.com/questions/51292406/check-if-token-expired-using-this-jwt-library
+- add checking token expiracy ONE USE https://stackoverflow.com/questions/51292406/check-if-token-expired-using-this-jwt-library
 - URL shortener
 
 DONE:

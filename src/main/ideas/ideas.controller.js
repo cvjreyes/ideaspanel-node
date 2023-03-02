@@ -37,8 +37,9 @@ exports.getSome = async (req, res) => {
 };
 
 exports.toApprove = async (req, res) => {
+  const { user_id } = req;
   try {
-    const idea = await getOldestIdeaToApproveService();
+    const idea = await getOldestIdeaToApproveService(user_id);
     send(res, true, idea);
   } catch (err) {
     console.error(err);
