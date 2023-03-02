@@ -43,7 +43,7 @@ exports.addImageService = async (id, image) => {
 
 exports.updateIdeaService = async (idea, publish) => {
   await pool.query(
-    "UPDATE ideas SET title = ?, description = ?, published = ?, draft = ? WHERE id = ?",
+    "UPDATE ideas SET title = ?, description = ?, sent_to_validate = ?, draft = ?, sent_to_validate_at = CURRENT_TIMESTAMP WHERE id = ?",
     [idea.title, idea.description, publish, !publish, idea.id]
   );
 };
