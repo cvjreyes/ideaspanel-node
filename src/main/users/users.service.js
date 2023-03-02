@@ -10,6 +10,25 @@ exports.getUserService = async (key, value) => {
   return user[0];
 };
 
+// exports.getUserIdeaService = async (user_id) => {
+//   const [user] = await pool.query(
+//     `SELECT users.* FROM users JOIN ideas ON users.id = ideas.user_id WHERE ideas.user_id = ${user_id} LIMIT 1`);
+//   return user;
+// };
+
+// exports.getUserIdeaService = async (user_id) => {
+//   const [user] = await pool.query(
+//     `SELECT users.* FROM users JOIN ideas ON users.id = ideas.user_id WHERE ideas.user_id = ? LIMIT 1`, user_id);
+//   return user;
+// };
+
+exports.getAllUsersService = async () => {
+  const [user] = await pool.query(
+    "SELECT users.* FROM users JOIN ideas ON users.id = ideas.user_id"
+  );
+  return user;
+};
+
 exports.createUserService = async (email) => {
   const [created] = await pool.query(
     "INSERT INTO users (email, name, profile_pic) VALUES (?, ?, ?)",
