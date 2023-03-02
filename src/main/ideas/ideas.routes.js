@@ -16,4 +16,6 @@ router.post("/upload_image/:idea_id", checkAuth, controller.uploadImage);
 
 router.post("/update", checkAuth, controller.update);
 
+router.delete("/delete_img/:idea_id", checkAuth, controller.deleteIdeaImg);
+
 module.exports = router;
