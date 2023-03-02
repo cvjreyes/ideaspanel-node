@@ -4,10 +4,6 @@ const router = require("express").Router(),
 
 router.get("/get_user_info", checkAuth, controller.getUserInfo);
 
-// router.get("/get_user_idea_info/:user_id", checkAuth, controller.getUserIdeaInfo);
-
-router.get("/get_all_users_info", checkAuth, controller.getAllUsersInfo);
-
 router.get("/profile/:id", checkAuth, controller.getProfileById);
 
 router.post("/login", controller.login);

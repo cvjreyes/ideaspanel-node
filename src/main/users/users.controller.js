@@ -28,27 +28,6 @@ exports.getUserInfo = async (req, res) => {
   }
 };
 
-// exports.getUserIdeaInfo = async (req, res) => {
-//   const { user_id } = req
-//   try {
-//     const user = await getUserIdeaService(user_id);
-//     return send(res, true, user);
-//   } catch (err) {
-//     console.error(err);
-//     return send(res, false, err);
-//   }
-// };
-
-exports.getAllUsersInfo = async (req, res) => {
-  try {
-    const user = await getAllUsersService();
-    return send(res, true, user);
-  } catch (err) {
-    console.error(err);
-    return send(res, false, err);
-  }
-};
-
 exports.getProfileById = async (req, res) => {
   const { id } = req.params;
   try {
