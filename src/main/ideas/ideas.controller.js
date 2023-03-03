@@ -9,6 +9,7 @@ const {
   getIdeaService,
   updateIdeaService,
   getOldestIdeaToApproveService,
+  deleteIdeaImgService,
 } = require("./ideas.service");
 
 const storage = multer.diskStorage({
@@ -107,6 +108,17 @@ exports.update = async (req, res) => {
   try {
     await updateIdeaService(form, publish);
     send(res, true);
+  } catch (err) {
+    console.error(err);
+    send(res, false, err);
+  }
+};
+
+exports.deleteIdeaImg = async (req, res) => {
+  const { idea_id } = req.params;
+  try {
+    await deleteIdeaImgService(idea_id);
+    send(res, true, "testing");
   } catch (err) {
     console.error(err);
     send(res, false, err);
