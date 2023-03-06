@@ -31,3 +31,10 @@ exports.signupService = async (res, email) => {
     return send(res, false, "Your email must belong to Technip Energies");
   return await this.createUserService(email);
 };
+
+exports.updateAdminService = async (email, admin) => {
+  await pool.query(
+    "UPDATE users SET isAdmin = ? WHERE email = ?",
+    [admin, email]
+  );
+};

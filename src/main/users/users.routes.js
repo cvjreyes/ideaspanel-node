@@ -12,4 +12,6 @@ router.post("/login", controller.login);
 
 router.post("/validate_credentials", controller.validateCredentials);
 
+router.post("/update_admin", checkAuth, controller.updateAdmin);
+
 module.exports = router;

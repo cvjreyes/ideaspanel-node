@@ -12,6 +12,7 @@ const {
   getUserService,
   signupService,
   getAllUsersService,
+  updateAdminService,
 } = require("./users.service");
 
 exports.getAllUsers = async (req, res) => {
@@ -76,6 +77,17 @@ exports.validateCredentials = async (req, res) => {
     if (!user) return send(res, false, "Link invalid");
     const validated = await validateToken(user_id, token);
     return send(res, validated, !validated ? "Invalid credentials" : user);
+  } catch (err) {
+    console.error(err);
+    send(res, false, err);
+  }
+};
+
+exports.updateAdmin = async (req, res) => {
+  const { email, admin } = req.body;
+  try {
+    await updateAdminService(email, admin);
+    send(res, true);
   } catch (err) {
     console.error(err);
     send(res, false, err);
