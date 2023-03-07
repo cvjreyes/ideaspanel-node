@@ -7,7 +7,7 @@ const cronFn = () => {
         console.log(
           new Date(Date.now()).toLocaleDateString(),
           new Date(Date.now()).toLocaleTimeString(),
-          "Idea checked"
+          "Idea checked date"
         );
       });
 };
