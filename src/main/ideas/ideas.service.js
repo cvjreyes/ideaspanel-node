@@ -12,8 +12,8 @@ exports.getSomeIdeasService = async (page) => {
 
 exports.getOldestIdeaToApproveService = async (user_id) => {
   const [idea] = await pool.query(
-    "SELECT * FROM ideas WHERE sent_to_validate = 1 ORDER BY sent_to_validate_at LIMIT 1",
-    user_id
+    "SELECT i.* FROM ideas as i LEFT JOIN votes as v ON i.id = v.idea_id WHERE i.sent_to_validate = 1 AND i.user_id != ? AND (v.user_id IS NULL OR v.user_id != ?) ORDER BY i.sent_to_validate_at LIMIT 1",
+    [user_id, user_id]
   );
   return idea;
 };

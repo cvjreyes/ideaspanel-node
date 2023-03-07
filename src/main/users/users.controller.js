@@ -8,7 +8,22 @@ const {
   validateToken,
 } = require("../../helpers/token");
 const { sendEmail } = require("../emails/emails.services");
-const { getUserService, signupService } = require("./users.service");
+const {
+  getUserService,
+  signupService,
+  getAllUsersService,
+  updateAdminService,
+} = require("./users.service");
+
+exports.getAllUsers = async (req, res) => {
+  try {
+    const users = await getAllUsersService();
+    return send(res, true, users);
+  } catch (err) {
+    console.error(err);
+    return send(res, false, err);
+  }
+};
 
 exports.getUserInfo = async (req, res) => {
   const { email } = req;
@@ -62,6 +77,17 @@ exports.validateCredentials = async (req, res) => {
     if (!user) return send(res, false, "Link invalid");
     const validated = await validateToken(user_id, token);
     return send(res, validated, !validated ? "Invalid credentials" : user);
+  } catch (err) {
+    console.error(err);
+    send(res, false, err);
+  }
+};
+
+exports.updateAdmin = async (req, res) => {
+  const { email, admin } = req.body;
+  try {
+    await updateAdminService(email, admin);
+    send(res, true);
   } catch (err) {
     console.error(err);
     send(res, false, err);
