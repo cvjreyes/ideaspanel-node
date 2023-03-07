@@ -37,7 +37,7 @@ app.use("/votes", require("./src/main/votes/votes.routes"));
 app.use("/images", express.static("images"));
 
 // NODE-CRON
-// require("./src/node_cron/cron")();
+require("./src/node_cron/cron")();
 
 // 404 HANDLING
 app.use("*", (req, res) => {
