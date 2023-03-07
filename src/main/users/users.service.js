@@ -2,6 +2,13 @@ const pool = require("../../../config/db");
 const { send } = require("../../helpers/send");
 const { getName } = require("../../helpers/users");
 
+exports.getAllUsersService = async () => {
+  const [users] = await pool.query(
+    "SELECT * FROM users"
+  );
+  return users;
+};
+
 exports.getUserService = async (key, value) => {
   const [user] = await pool.query(
     `SELECT * FROM users WHERE ${key} = ?`,
@@ -23,4 +30,11 @@ exports.signupService = async (res, email) => {
   if (!regex.exec(email))
     return send(res, false, "Your email must belong to Technip Energies");
   return await this.createUserService(email);
+};
+
+exports.updateAdminService = async (email, admin) => {
+  await pool.query(
+    "UPDATE users SET isAdmin = ? WHERE email = ?",
+    [admin, email]
+  );
 };
