@@ -2,7 +2,7 @@ const cron = require("node-cron");
 const { checkDateFromIdeasValidate, ideasPublished } = require("./ideas");
 
 const cronFn = () => {
-  cron.schedule("* * 23 * *", () => {
+  cron.schedule("* * 23 * 1-5", () => {
     checkDateFromIdeasValidate();
     ideasPublished();
     console.log(

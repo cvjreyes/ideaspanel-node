@@ -4,7 +4,7 @@ const pool = require("../../../config/db");
 
 exports.getSomeIdeasService = async (page) => {
   const [results] = await pool.query(
-    "SELECT ideas.*, users.name, users.profile_pic FROM ideas JOIN users ON ideas.user_id = users.id LIMIT 20 OFFSET ?",
+    "SELECT ideas.*, users.name, users.profile_pic FROM ideas JOIN users ON ideas.user_id = users.id AND published = 1 LIMIT 20 OFFSET ?",
     page * 20
   );
   return results;

@@ -42,7 +42,7 @@ exports.ideasPublished = async () => {
       );
       // Si esa idea tiene mas votos positivos que la mitad de la suma de todos los usuarios que son comittee
       if (
-        positiveVotes[0].PositiveVotes >=
+        positiveVotes[0].PositiveVotes >
         (comitteeUsers[0].ComiteeUsers / 2).toFixed()
       ) {
         // Se publica y si se le asigna la fecha correspondiente actual.
