@@ -2,9 +2,9 @@ const pool = require("../../../config/db");
 const { send } = require("../../helpers/send");
 const { getName } = require("../../helpers/users");
 
-exports.getAllUsersService = async () => {
+exports.getComitteeUsersService = async () => {
   const [users] = await pool.query(
-    "SELECT * FROM users"
+    "SELECT * FROM users WHERE isComitee = 1"
   );
   return users;
 };

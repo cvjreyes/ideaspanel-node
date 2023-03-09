@@ -1,7 +1,7 @@
 const multer = require("multer");
 const {
   getUserService,
-  getAllUsersService,
+  getComitteeUsersService,
 } = require("../users/users.service");
 const { send } = require("../../helpers/send");
 const {
@@ -114,19 +114,17 @@ exports.update = async (req, res) => {
   try {
     // falta que cuando la idea la has publicado tu que no se te envie el correo, aunque seas comittee
     await updateIdeaService(form, publish);
-    const users = await getAllUsersService();
+    const users = await getComitteeUsersService();
     for (let i = 0; i < users.length; i++) {
-      if (users[i].isComitee) {
-        const token = generateToken(users[i].email);
-        await saveTokenIntoDB(users[i].email, token);
-        const link = generateLink("log_in", users[i].id, token);
-        await sendEmail(
-          users[i].email,
-          "IdeasPanel: Comittee Idea",
-          "comittee",
-          link
-        );
-      }
+      const token = generateToken(users[i].email);
+      await saveTokenIntoDB(users[i].email, token);
+      const link = generateLink("log_in", users[i].id, token);
+      await sendEmail(
+        users[i].email,
+        "IdeasPanel: Comittee Idea",
+        "comittee",
+        link
+      );
     }
     send(res, true);
   } catch (err) {

@@ -3,6 +3,7 @@ const { checkDateFromIdeasValidate, ideasPublished } = require("./ideas");
 
 const cronFn = () => {
   cron.schedule("* * 23 * 1-5", () => {
+  // cron.schedule("* * * * *", () => {
     checkDateFromIdeasValidate();
     ideasPublished();
     console.log(
