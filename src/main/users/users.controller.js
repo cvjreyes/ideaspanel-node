@@ -11,13 +11,24 @@ const { sendEmail } = require("../emails/emails.services");
 const {
   getUserService,
   signupService,
-  getAllUsersService,
+  getComitteeUsersService,
   updateAdminService,
+  getAllUsersService,
 } = require("./users.service");
 
 exports.getAllUsers = async (req, res) => {
   try {
     const users = await getAllUsersService();
+    return send(res, true, users);
+  } catch (err) {
+    console.error(err);
+    return send(res, false, err);
+  }
+};
+
+exports.getComitteeUsers = async (req, res) => {
+  try {
+    const users = await getComitteeUsersService();
     return send(res, true, users);
   } catch (err) {
     console.error(err);

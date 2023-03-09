@@ -1,0 +1,19 @@
+const cron = require("node-cron");
+const { checkDateFromIdeasValidate, ideasPublished } = require("./ideas");
+
+const cronFn = () => {
+  cron.schedule("* * 23 * 1-5", () => {
+  // cron.schedule("* * * * *", () => {
+    checkDateFromIdeasValidate();
+    ideasPublished();
+    console.log(
+      new Date(Date.now()).toLocaleDateString(),
+      new Date(Date.now()).toLocaleTimeString(),
+      "Idea checked date"
+    );
+  });
+};
+
+module.exports = () => {
+  cronFn();
+};
