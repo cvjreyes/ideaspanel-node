@@ -56,7 +56,7 @@ exports.deleteIdeaImgService = async (idea_id) => {
     "." + idea[0].image.substring(process.env.NODE_SERVER_URL.length);
   fs.unlink(path, function (err) {
     if (err) console.error(err);
-    else console.log("success");
+    else console.info("Image deleted successfully");
   });
   await pool.query("UPDATE ideas SET image = null WHERE id = ?", idea_id);
 };

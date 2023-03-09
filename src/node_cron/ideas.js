@@ -1,7 +1,7 @@
 const pool = require("../../config/db");
 const { getComitteeUsersService } = require("../main/users/users.service");
 
-exports.checkDateFromIdeasValidate = async () => {
+exports.checkForExpiredIdeas = async () => {
   try {
     const [ideas] = await pool.query("SELECT * FROM ideas");
     const actualDate = new Date();
@@ -27,24 +27,24 @@ exports.checkDateFromIdeasValidate = async () => {
   }
 };
 
-exports.ideasPublished = async () => {
+exports.checkForIdeasToPublish = async () => {
   try {
     // Suma de los usuarios que son comittee
     const [comitteeUsers] = await pool.query(
-      "SELECT COUNT(*) as 'ComiteeUsers' FROM users WHERE isComitee = 1"
+      "SELECT COUNT(*) as 'comiteeUsers' FROM users WHERE isComitee = 1"
     );
     // Recogemos todas las ideas y las recorremos
     const [ideas] = await pool.query("SELECT * FROM ideas WHERE published = 0");
     for (let i = 0; i < ideas.length; i++) {
       // Contamos la cantidad de votos positivos de cada idea
       const [positiveVotes] = await pool.query(
-        "SELECT COUNT(*) as 'PositiveVotes' FROM votes WHERE approved = 1 AND idea_id = ? ",
+        "SELECT COUNT(*) as 'positiveVotes' FROM votes WHERE approved = 1 AND idea_id = ? ",
         ideas[i].id
       );
       // Si esa idea tiene mas votos positivos que la mitad de la suma de todos los usuarios que son comittee
       if (
-        positiveVotes[0].PositiveVotes >
-        (comitteeUsers[0].ComiteeUsers / 2).toFixed()
+        positiveVotes[0].positiveVotes >
+        (comitteeUsers[0].comiteeUsers / 2).toFixed()
       ) {
         // Se publica y si se le asigna la fecha correspondiente actual.
         await pool.query(
@@ -60,7 +60,7 @@ exports.ideasPublished = async () => {
 };
 
 // Este aun no se ha probado
-exports.blockComitteeUser = async () => {
+exports.checkForInactiveComiteeMembers = async () => {
   try {
     // Get all users that are comittee
     const users = await getComitteeUsersService();
