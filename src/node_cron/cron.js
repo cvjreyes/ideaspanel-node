@@ -1,5 +1,5 @@
 const cron = require("node-cron");
-const { checkForExpiredIdeas, checkForIdeasToPublish } = require("./ideas");
+const { checkForExpiredIdeas, checkForIdeasToPublish } = require("./cron-fns");
 
 const cronFn = () => {
   // cron.schedule("* * * * *", () => {
