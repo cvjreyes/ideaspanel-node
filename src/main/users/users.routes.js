@@ -4,6 +4,8 @@ const router = require("express").Router(),
 
 router.get("/get_all_users", checkAuth, controller.getAllUsers);
 
+router.get("/get_comittee_users", checkAuth, controller.getComitteeUsers);
+
 router.get("/get_user_info", checkAuth, controller.getUserInfo);
 
 router.get("/profile/:id", checkAuth, controller.getProfileById);

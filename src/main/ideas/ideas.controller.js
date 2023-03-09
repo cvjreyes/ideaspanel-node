@@ -1,5 +1,8 @@
 const multer = require("multer");
-const { getUserService } = require("../users/users.service");
+const {
+  getUserService,
+  getComitteeUsersService,
+} = require("../users/users.service");
 const { send } = require("../../helpers/send");
 const {
   insertIdeaService,
@@ -11,6 +14,9 @@ const {
   getOldestIdeaToApproveService,
   deleteIdeaImgService,
 } = require("./ideas.service");
+const { generateToken, saveTokenIntoDB } = require("../../helpers/token");
+const { generateLink } = require("../../helpers/emails");
+const { sendEmail } = require("../emails/emails.services");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -106,7 +112,20 @@ exports.uploadImage = async (req, res) => {
 exports.update = async (req, res) => {
   const { form, publish } = req.body;
   try {
+    // falta que cuando la idea la has publicado tu que no se te envie el correo, aunque seas comittee
     await updateIdeaService(form, publish);
+    const users = await getComitteeUsersService();
+    for (let i = 0; i < users.length; i++) {
+      const token = generateToken(users[i].email);
+      await saveTokenIntoDB(users[i].email, token);
+      const link = generateLink("log_in", users[i].id, token);
+      await sendEmail(
+        users[i].email,
+        "IdeasPanel: Comittee Idea",
+        "comittee",
+        link
+      );
+    }
     send(res, true);
   } catch (err) {
     console.error(err);

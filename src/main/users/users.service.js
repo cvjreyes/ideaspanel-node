@@ -9,6 +9,13 @@ exports.getAllUsersService = async () => {
   return users;
 };
 
+exports.getComitteeUsersService = async () => {
+  const [users] = await pool.query(
+    "SELECT * FROM users WHERE isComitee = 1"
+  );
+  return users;
+};
+
 exports.getUserService = async (key, value) => {
   const [user] = await pool.query(
     `SELECT * FROM users WHERE ${key} = ?`,
