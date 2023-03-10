@@ -1,15 +1,15 @@
 const cron = require("node-cron");
-const { checkDateFromIdeasValidate, ideasPublished } = require("./ideas");
+const { checkForExpiredIdeas, checkForIdeasToPublish } = require("./cron-fns");
 
 const cronFn = () => {
-  cron.schedule("* * 23 * 1-5", () => {
   // cron.schedule("* * * * *", () => {
-    checkDateFromIdeasValidate();
-    ideasPublished();
-    console.log(
+  cron.schedule("* * 23 * 1-5", () => {
+    checkForIdeasToPublish();
+    checkForExpiredIdeas();
+    console.info(
       new Date(Date.now()).toLocaleDateString(),
       new Date(Date.now()).toLocaleTimeString(),
-      "Idea checked date"
+      "Checked ideas for approved/rejected"
     );
   });
 };

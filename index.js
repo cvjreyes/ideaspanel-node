@@ -10,10 +10,11 @@ app.use(express.json());
 app.use(require("cors")());
 
 // SECURITY
+// for images
 app.use(require("helmet")());
 app.use(
   require("helmet").crossOriginResourcePolicy({ policy: "cross-origin" })
-); // for images
+);
 app.disable("x-powered-by");
 app.use(require("hpp")()); // middleware to protect against HTTP Parameter Pollution attacks
 // adding limiter to /user requests to stop brute force attacks
