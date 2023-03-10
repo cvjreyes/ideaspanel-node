@@ -47,7 +47,6 @@ exports.toApprove = async (req, res) => {
   const { user_id } = req.params;
   try {
     const idea = await getOldestIdeaToApproveService(user_id);
-    console.log(idea);
     send(res, true, idea);
   } catch (err) {
     console.error(err);
