@@ -2,10 +2,10 @@ const cron = require("node-cron");
 const { checkForExpiredIdeas, checkForIdeasToPublish } = require("./cron-fns");
 
 const cronFn = () => {
-  // cron.schedule("* * * * *", () => {
-  cron.schedule("* * 23 * 1-5", () => {
+  cron.schedule("* * * * *", () => {
+    // cron.schedule("* * 23 * 1-5", () => {
     checkForIdeasToPublish();
-    checkForExpiredIdeas();
+    // checkForExpiredIdeas();
     console.info(
       new Date(Date.now()).toLocaleDateString(),
       new Date(Date.now()).toLocaleTimeString(),
