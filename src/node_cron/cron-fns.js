@@ -37,7 +37,7 @@ exports.checkForIdeasToPublish = async () => {
         ideas[i].id
       );
       // Si esa idea tiene mas votos positivos que la mitad de la suma de todos los usuarios que son comittee
-      if (positiveVotes[0].total > (comitteeUsers[0].total / 2).toFixed()) {
+      if (positiveVotes[0].total > comitteeUsers[0].total / 2) {
         // Se publica y si se le asigna la fecha correspondiente actual.
         await pool.query(
           "UPDATE ideas SET sent_to_validate = 0, published = 1, published_at = CURRENT_TIMESTAMP WHERE id = ?",
