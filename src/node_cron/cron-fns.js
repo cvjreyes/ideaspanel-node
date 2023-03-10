@@ -31,7 +31,7 @@ exports.checkForIdeasToPublish = async () => {
   try {
     // Suma de los usuarios que son comittee
     const [comitteeUsers] = await pool.query(
-      "SELECT COUNT(*) as 'comiteeUsers' FROM users WHERE isComitee = 1"
+      "SELECT COUNT(*) as 'comiteeUsers' FROM users WHERE isComittee = 1"
     );
     // Recogemos todas las ideas y las recorremos
     const [ideas] = await pool.query("SELECT * FROM ideas WHERE published = 0");
