@@ -38,12 +38,12 @@ exports.checkForIdeasToPublish = async () => {
     for (let i = 0; i < ideas.length; i++) {
       // Contamos la cantidad de votos positivos de cada idea
       const [positiveVotes] = await pool.query(
-        "SELECT COUNT(*) as 'positiveVotes' FROM votes WHERE approved = 1 AND idea_id = ? ",
+        "SELECT COUNT(*) as 'positiveVotes' FROM comittee_votes WHERE approved = 1 AND idea_id = ? ",
         ideas[i].id
       );
       // Si esa idea tiene mas votos positivos que la mitad de la suma de todos los usuarios que son comittee
       if (
-        positiveVotes[0].positiveVotes >
+        positiveVotes[0].positiveVotes >=
         (comitteeUsers[0].comiteeUsers / 2).toFixed()
       ) {
         // Se publica y si se le asigna la fecha correspondiente actual.
@@ -68,7 +68,7 @@ exports.checkForInactiveComiteeMembers = async () => {
     for (let y = 0; y < users.length; y++) {
       // Si esta query sale con 1 quiere decir que este usuario a votado esta idea
       const [userVotedIdea] = pool.query(
-        "SELECT COUNT(*) FROM votes WHERE idea_id = ? AND user_id = ?",
+        "SELECT COUNT(*) FROM comittee_votes WHERE idea_id = ? AND user_id = ?",
         ideas[i].id,
         users[y].id
       );
