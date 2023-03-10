@@ -8,11 +8,9 @@ exports.checkIfComitteeUserAlreadyVotedIdea = async (user_id, idea_id) => {
   return comitteVote[0];
 };
 
-exports.submitComitteeVoteService = async (idea_id, user_id, vote) => {
-  const [finalComitteeVote] = await pool.query(
+exports.submitVoteService = async (idea_id, user_id, vote) => {
+  await pool.query(
     "INSERT INTO comittee_votes (idea_id, user_id, approved) VALUES (?, ?, ?)",
     [idea_id, user_id, vote]
   );
-
-  return finalComitteeVote;
 };
