@@ -33,7 +33,7 @@ app.use("/users", apiLimiter);
 // ROUTES
 app.use("/users", require("./src/main/users/users.routes"));
 app.use("/ideas", require("./src/main/ideas/ideas.routes"));
-app.use("/votes", require("./src/main/votes/votes.routes"));
+app.use("/idea_votes", require("./src/main/idea_votes/idea_votes.routes"));
 app.use("/comittee_votes", require("./src/main/comittee_votes/comittee_votes.routes"));
 app.use("/comments", require("./src/main/comments/comments.routes"));
 

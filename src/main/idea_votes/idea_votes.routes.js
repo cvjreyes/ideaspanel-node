@@ -1,7 +1,7 @@
 const router = require("express").Router(),
-  controller = require("./votes.controller"),
+  controller = require("./idea_votes.controller"),
   { checkAuth } = require("../../middlewares/checkAuth");
 
-router.post("/submit_votes", checkAuth, controller.submitVote);
+router.post("/submit_idea_vote", checkAuth, controller.submitIdeaVote);
 
 module.exports = router;
