@@ -1,4 +1,3 @@
-const pool = require("../../config/db");
 const { calculateDaysPassed } = require("../helpers/time");
 const {
   countPositiveVotes,
@@ -25,7 +24,7 @@ exports.checkVoting = async () => {
       } else {
         declineIdea(idea.id);
       }
-      checkForInactiveComitteeMembers(comitteeMembers, idea.id, idea.user_id);
     }
+    checkForInactiveComitteeMembers(comitteeMembers, idea.id, idea.user_id);
   }
 };
