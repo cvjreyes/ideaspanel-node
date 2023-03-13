@@ -14,6 +14,7 @@ const {
   getOldestIdeaToApproveService,
   deleteIdeaImgService,
   getDeniedService,
+  getPublishedService,
 } = require("./ideas.service");
 const { generateToken, saveTokenIntoDB } = require("../../helpers/token");
 const { generateLink } = require("../../helpers/emails");
@@ -70,6 +71,17 @@ exports.getDenied = async (req, res) => {
   const { user_id } = req.params;
   try {
     const denied = await getDeniedService(user_id);
+    send(res, true, denied);
+  } catch (err) {
+    console.error(err);
+    send(res, false, err);
+  }
+};
+
+exports.getPublished = async (req, res) => {
+  const { user_id } = req.params;
+  try {
+    const denied = await getPublishedService(user_id);
     send(res, true, denied);
   } catch (err) {
     console.error(err);
