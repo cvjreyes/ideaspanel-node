@@ -38,6 +38,18 @@ const addMissingVote = async (user_id) => {
   );
 };
 
+const getTimesWithoutVoting = async (user_id) => {
+  const [noVotes] = await pool.query(
+    "SELECT * FROM users WHERE id = ?",
+    user_id
+  );
+  return noVotes[0].noVotes;
+};
+
+const removeComittee = async (user_id) => {
+  await pool.query("UPDATE users SET isComittee = 0 WHERE id = ?", user_id);
+};
+
 exports.checkForInactiveComitteeMembers = async (
   comitteeMembers,
   idea_id,
@@ -47,6 +59,12 @@ exports.checkForInactiveComitteeMembers = async (
     if (idea_user_id != comitteeMembers[i].id) {
       const hasVote = await checkVote(idea_id, comitteeMembers[i].id);
       if (!!hasVote) await addMissingVote(comitteeMembers[i].id);
+      const numOfTimesWithoutVoting = await getTimesWithoutVoting(
+        comitteeMembers[i].id
+      );
+      if (numOfTimesWithoutVoting >= 5) {
+        removeComittee(comitteeMembers[i].id);
+      }
     }
   }
 };

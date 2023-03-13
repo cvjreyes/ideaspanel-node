@@ -1,15 +1,15 @@
 const cron = require("node-cron");
-const {
-  checkForExpiredIdeas,
-  checkForIdeasToPublish,
-  checkForInactiveComiteeMembers,
-  checkVoting,
-} = require("./cron-fns");
+const { checkVoting } = require("./cron-fns");
 
 const cronFn = () => {
   // cron.schedule("* * * * *", () => {
   cron.schedule("* * 23 * 1-5", () => {
     checkVoting();
+    console.info(
+      new Date(Date.now()).toLocaleDateString(),
+      new Date(Date.now()).toLocaleTimeString(),
+      "Voting checked"
+    );
   });
 };
 
