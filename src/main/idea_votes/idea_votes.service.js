@@ -13,14 +13,23 @@ exports.checkIfUserAlreadyVotedIdeaService = async (user_id, idea_id) => {
     "SELECT * FROM idea_votes WHERE user_id = ? AND idea_id = ?",
     [user_id, idea_id]
   );
-  return vote[0];
+  // console.log("Primer voto: ", user_id, idea_id);
+  return vote;
 };
 
-exports.submitIdeaVoteService = async (idea_id, user_id, vote) => {
+exports.submitIdeaVoteService = async (idea_id, user_id) => {
   const [finalIdeaVote] = await pool.query(
-    "INSERT INTO idea_votes (idea_id, user_id, approved) VALUES (?, ?, ?)",
-    [idea_id, user_id, vote]
+    "INSERT INTO idea_votes (idea_id, user_id) VALUES (?, ?)",
+    [idea_id, user_id]
+  );
+  return finalIdeaVote;
+};
+
+exports.deleteIdeaVoteService = async (idea_id, user_id) => {
+  const [deleteIdeaVote] = await pool.query(
+    "DELETE FROM idea_votes WHERE idea_id = ? AND user_id = ?",
+    [idea_id, user_id]
   );
 
-  return finalIdeaVote;
+  return deleteIdeaVote;
 };

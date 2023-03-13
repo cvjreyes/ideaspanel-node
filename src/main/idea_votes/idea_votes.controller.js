@@ -3,6 +3,7 @@ const {
   submitIdeaVoteService,
   checkIfUserAlreadyVotedIdeaService,
   getIdeaVotesService,
+  deleteIdeaVoteService,
 } = require("./idea_votes.service");
 
 exports.getIdeaVotes = async (req, res) => {
@@ -17,13 +18,14 @@ exports.getIdeaVotes = async (req, res) => {
 };
 
 exports.checkIfUserAlreadyVotedIdea = async (req, res) => {
-  const { user_id, idea_id } = req.body;
+  const { user_id, idea_id } = req.params;
   try {
     const alreadyVoted = await checkIfUserAlreadyVotedIdeaService(
       user_id,
       idea_id
     );
-    send(res, true, alreadyVoted);
+    if (alreadyVoted.length > 0) return send(res, true, alreadyVoted);
+    send(res, false, alreadyVoted);
   } catch (err) {
     console.error(err);
     send(res, false, err);
@@ -31,17 +33,24 @@ exports.checkIfUserAlreadyVotedIdea = async (req, res) => {
 };
 
 exports.submitIdeaVote = async (req, res) => {
-  const { idea_id, user_id, vote } = req.body;
+  const { idea_id, user_id } = req.body;
   try {
-    const alreadyVoted = await checkIfUserAlreadyVotedIdeaService(
-      user_id,
-      idea_id
-    );
-    if (alreadyVoted) return send(res, true);
-    const ok = await submitIdeaVoteService(idea_id, user_id, vote);
+    const ok = await submitIdeaVoteService(idea_id, user_id);
     if (ok) return send(res, true, "Idea vote successfully done");
+    send(res, false, "Idea vote error");
   } catch (err) {
     console.error(err);
     send(res, false, err);
+  }
+};
+
+exports.deleteIdeaVote = async (req, res) => {
+  const { idea_id, user_id } = req.params;
+  try {
+    await deleteIdeaVoteService(idea_id, user_id);
+    return send(res, true);
+  } catch (err) {
+    console.error(err);
+    return send(res, false, err);
   }
 };
