@@ -60,3 +60,24 @@ exports.deleteIdeaImgService = async (idea_id) => {
   });
   await pool.query("UPDATE ideas SET image = null WHERE id = ?", idea_id);
 };
+
+exports.getSentToValidate = async () => {
+  const [sentToValidate] = await pool.query(
+    "SELECT * FROM ideas WHERE sent_to_validate = 1"
+  );
+  return sentToValidate;
+};
+
+exports.declineIdea = async (idea_id) => {
+  await pool.query(
+    "UPDATE ideas SET sent_to_validate = 0, draft = 0 WHERE id = ?",
+    idea_id
+  );
+};
+
+exports.publishIdea = async (idea_id) => {
+  await pool.query(
+    "UPDATE ideas SET sent_to_validate = 0, published = 1, published_at = CURRENT_TIMESTAMP WHERE id = ?",
+    idea_id
+  );
+};
