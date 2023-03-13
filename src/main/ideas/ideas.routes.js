@@ -10,6 +10,8 @@ router.get("/get_drafts/:user_id", checkAuth, controller.getDrafts);
 
 router.get("/get_denied/:user_id", checkAuth, controller.getDenied);
 
+router.get("/get_published/:user_id", checkAuth, controller.getPublished);
+
 router.get("/get_info/:idea_id", checkAuth, controller.getIdeaInfo);
 
 router.post("/upload", checkAuth, controller.upload);
