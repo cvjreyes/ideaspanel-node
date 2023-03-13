@@ -12,6 +12,10 @@ router.get(
 
 router.post("/submit_idea_vote", checkAuth, controller.submitIdeaVote);
 
-router.delete("/delete_idea_vote/:idea_id/:user_id", checkAuth, controller.deleteIdeaVote);
+router.delete(
+  "/delete_idea_vote/:idea_id/:user_id",
+  checkAuth,
+  controller.deleteIdeaVote
+);
 
 module.exports = router;

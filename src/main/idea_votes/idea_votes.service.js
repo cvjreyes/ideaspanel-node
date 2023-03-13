@@ -13,7 +13,6 @@ exports.checkIfUserAlreadyVotedIdeaService = async (user_id, idea_id) => {
     "SELECT * FROM idea_votes WHERE user_id = ? AND idea_id = ?",
     [user_id, idea_id]
   );
-  // console.log("Primer voto: ", user_id, idea_id);
   return vote;
 };
 
