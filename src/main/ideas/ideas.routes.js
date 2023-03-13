@@ -6,7 +6,9 @@ router.get("/get_some/:page", checkAuth, controller.getSome);
 
 router.get("/to_approve/:user_id", checkAuth, controller.toApprove);
 
-router.get("/get_drafts", checkAuth, controller.getDrafts);
+router.get("/get_drafts/:user_id", checkAuth, controller.getDrafts);
+
+router.get("/get_denied/:user_id", checkAuth, controller.getDenied);
 
 router.get("/get_info/:idea_id", checkAuth, controller.getIdeaInfo);
 

@@ -26,6 +26,14 @@ exports.getDraftsService = async (user_id) => {
   return drafts;
 };
 
+exports.getDeniedService = async (user_id) => {
+  const [denied] = await pool.query(
+    "SELECT * FROM ideas WHERE draft = 0 AND sent_to_validate = 0 AND published = 0 AND user_id = ?",
+    user_id
+  );
+  return denied;
+};
+
 exports.getIdeaService = async (idea_id) => {
   const [idea] = await pool.query("SELECT * FROM ideas WHERE id = ?", idea_id);
   return idea;

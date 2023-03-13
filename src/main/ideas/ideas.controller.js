@@ -13,6 +13,7 @@ const {
   updateIdeaService,
   getOldestIdeaToApproveService,
   deleteIdeaImgService,
+  getDeniedService,
 } = require("./ideas.service");
 const { generateToken, saveTokenIntoDB } = require("../../helpers/token");
 const { generateLink } = require("../../helpers/emails");
@@ -55,11 +56,21 @@ exports.toApprove = async (req, res) => {
 };
 
 exports.getDrafts = async (req, res) => {
-  const { email } = req;
+  const { user_id } = req.params;
   try {
-    const user = await getUserService("email", email);
-    const drafts = await getDraftsService(user.id);
+    const drafts = await getDraftsService(user_id);
     send(res, true, drafts);
+  } catch (err) {
+    console.error(err);
+    send(res, false, err);
+  }
+};
+
+exports.getDenied = async (req, res) => {
+  const { user_id } = req.params;
+  try {
+    const denied = await getDeniedService(user_id);
+    send(res, true, denied);
   } catch (err) {
     console.error(err);
     send(res, false, err);
