@@ -12,7 +12,7 @@ exports.getSomeIdeasService = async (page) => {
 
 exports.getOldestIdeaToApproveService = async (user_id) => {
   const [idea] = await pool.query(
-    "SELECT i.* FROM ideas as i LEFT JOIN comittee_votes as v ON i.id = v.idea_id WHERE i.sent_to_validate = 1 AND i.user_id != ? AND (v.user_id IS NULL OR v.user_id != ?) ORDER BY i.sent_to_validate_at LIMIT 1",
+    "SELECT i.* FROM ideas as i LEFT JOIN comittee_votes as v ON i.id = v.idea_id WHERE i.sent_to_validate = 1 AND (v.user_id IS NULL OR v.user_id = ?) AND (v.user_id IS NULL OR v.user_id != ?) ORDER BY i.sent_to_validate_at LIMIT 1",
     [user_id, user_id]
   );
   return idea;
@@ -24,6 +24,14 @@ exports.getDraftsService = async (user_id) => {
     user_id
   );
   return drafts;
+};
+
+exports.getDeniedService = async (user_id) => {
+  const [denied] = await pool.query(
+    "SELECT * FROM ideas WHERE draft = 0 AND sent_to_validate = 0 AND published = 0 AND user_id = ?",
+    user_id
+  );
+  return denied;
 };
 
 exports.getIdeaService = async (idea_id) => {
@@ -59,4 +67,25 @@ exports.deleteIdeaImgService = async (idea_id) => {
     else console.info("Image deleted successfully");
   });
   await pool.query("UPDATE ideas SET image = null WHERE id = ?", idea_id);
+};
+
+exports.getSentToValidate = async () => {
+  const [sentToValidate] = await pool.query(
+    "SELECT * FROM ideas WHERE sent_to_validate = 1"
+  );
+  return sentToValidate;
+};
+
+exports.declineIdea = async (idea_id) => {
+  await pool.query(
+    "UPDATE ideas SET sent_to_validate = 0, draft = 0 WHERE id = ?",
+    idea_id
+  );
+};
+
+exports.publishIdea = async (idea_id) => {
+  await pool.query(
+    "UPDATE ideas SET sent_to_validate = 0, published = 1, published_at = CURRENT_TIMESTAMP WHERE id = ?",
+    idea_id
+  );
 };

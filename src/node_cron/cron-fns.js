@@ -1,88 +1,30 @@
-const pool = require("../../config/db");
 const { calculateDaysPassed } = require("../helpers/time");
+const {
+  countPositiveVotes,
+  checkForInactiveComitteeMembers,
+} = require("../main/comittee_votes/comiitte_votes.service");
+const {
+  getSentToValidate,
+  declineIdea,
+  publishIdea,
+} = require("../main/ideas/ideas.service");
 const { getComitteeUsersService } = require("../main/users/users.service");
 
-exports.checkForExpiredIdeas = async () => {
-  try {
-    const [ideas] = await pool.query("SELECT * FROM ideas");
-    for (let i = 0; i < ideas.length; i++) {
-      const daysPassed = calculateDaysPassed(ideas[i].sent_to_validate_at);
-      if (daysPassed > 14) {
-        await pool.query(
-          "UPDATE ideas SET sent_to_validate = 0, draft = 0 WHERE id = ?",
-          ideas[i].id
-        );
-      }
-    }
-  } catch (err) {
-    console.error(err);
-    throw err;
-  }
-};
-
-exports.checkForIdeasToPublish = async () => {
-  try {
-    // Suma de los usuarios que son comittee
-    const [comitteeUsers] = await pool.query(
-      "SELECT COUNT(*) as 'total' FROM users WHERE isComittee = 1"
-    );
-    // Recogemos todas las ideas y las recorremos
-    const [ideas] = await pool.query(
-      "SELECT * FROM ideas WHERE sent_to_validate = 1"
-    );
-    for (let i = 0; i < ideas.length; i++) {
-      // Contamos la cantidad de votos positivos de cada idea
-      const [positiveVotes] = await pool.query(
-        "SELECT COUNT(*) as 'total' FROM comittee_votes WHERE approved = 1 AND idea_id = ? ",
-        ideas[i].id
-      );
-      // Si esa idea tiene mas votos positivos que la mitad de la suma de todos los usuarios que son comittee
-      if (positiveVotes[0].total > comitteeUsers[0].total / 2) {
-        // Se publica y si se le asigna la fecha correspondiente actual.
-        await pool.query(
-          "UPDATE ideas SET sent_to_validate = 0, published = 1, published_at = CURRENT_TIMESTAMP WHERE id = ?",
-          ideas[i].id
-        );
-      }
-    }
-  } catch (err) {
-    console.error(err);
-    throw err;
-  }
-};
-
-// Este aun no se ha probado
-exports.checkForInactiveComiteeMembers = async () => {
-  try {
-    // Get all users that are comittee
-    const users = await getComitteeUsersService();
-    // Recorremos todos los usuarios que son comitte
-    for (let y = 0; y < users.length; y++) {
-      // Si esta query sale con 1 quiere decir que este usuario a votado esta idea
-      const [userVotedIdea] = pool.query(
-        "SELECT COUNT(*) FROM comittee_votes WHERE idea_id = ? AND user_id = ?",
-        ideas[i].id,
-        users[y].id
-      );
-      // Si su resultado es 0 entra en estas dos condiciones
-      if (!userVotedIdea) {
-        if (users[y].noVotes < 5) {
-          // Si lleva menos de 5 votos consecutivos sin votar se le suma 1 al contador de ese usuario
-          await pool.query(
-            "UPDATE users SET noVotes = noVotes + 1 WHERE id = ?",
-            users[y].id
-          );
-        }
+exports.checkVoting = async () => {
+  const sentToValidate = await getSentToValidate();
+  const comitteeMembers = await getComitteeUsersService();
+  const totalComitteeMembers = comitteeMembers.length;
+  for (let i = 0; i < sentToValidate.length; i++) {
+    const idea = sentToValidate[i];
+    const daysPassed = calculateDaysPassed(idea.sent_to_validate_at);
+    const positiveVotes = await countPositiveVotes(idea.id);
+    if (daysPassed > 14) {
+      if (positiveVotes > totalComitteeMembers / 2) {
+        publishIdea(idea.id);
       } else {
-        // Si ha votado esta idea y no ha llegado a los 5 no votos consecutivos se le reinicia el contador
-        await pool.query(
-          "UPDATE users SET noVotes = 0 WHERE id = ?",
-          users[y].id
-        );
+        declineIdea(idea.id);
       }
     }
-  } catch (err) {
-    console.error(err);
-    throw err;
+    checkForInactiveComitteeMembers(comitteeMembers, idea.id, idea.user_id);
   }
 };
