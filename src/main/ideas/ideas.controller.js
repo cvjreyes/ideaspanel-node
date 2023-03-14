@@ -15,6 +15,7 @@ const {
   deleteIdeaImgService,
   getDeniedService,
   getPublishedService,
+  getValidatingService,
 } = require("./ideas.service");
 const { generateToken, saveTokenIntoDB } = require("../../helpers/token");
 const { generateLink } = require("../../helpers/emails");
@@ -83,6 +84,17 @@ exports.getPublished = async (req, res) => {
   try {
     const denied = await getPublishedService(user_id);
     send(res, true, denied);
+  } catch (err) {
+    console.error(err);
+    send(res, false, err);
+  }
+};
+
+exports.getValidating = async (req, res) => {
+  const { user_id } = req.params;
+  try {
+    const validating = await getValidatingService(user_id);
+    send(res, true, validating);
   } catch (err) {
     console.error(err);
     send(res, false, err);
