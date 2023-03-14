@@ -18,7 +18,6 @@ exports.getIdeaVotes = async (req, res) => {
 
 exports.submitIdeaVote = async (req, res) => {
   const { idea_id, user_id, check_vote } = req.body;
-  console.log(req.body);
   try {
     if (check_vote) {
       const ok = await deleteIdeaVoteService(idea_id, user_id);
