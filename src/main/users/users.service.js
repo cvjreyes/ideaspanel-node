@@ -35,9 +35,9 @@ exports.signupService = async (res, email) => {
   return await this.createUserService(email);
 };
 
-exports.updateAdminService = async (email, admin) => {
-  await pool.query("UPDATE users SET isAdmin = ? WHERE email = ?", [
-    admin,
+exports.updateComitteeService = async (email, comittee) => {
+  await pool.query("UPDATE users SET isComittee = ? WHERE email = ?", [
+    comittee,
     email,
   ]);
 };
