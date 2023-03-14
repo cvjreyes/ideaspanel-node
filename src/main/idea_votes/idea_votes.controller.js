@@ -17,24 +17,20 @@ exports.getIdeaVotes = async (req, res) => {
 };
 
 exports.submitIdeaVote = async (req, res) => {
-  const { idea_id, user_id } = req.body;
+  const { idea_id, user_id, check_vote } = req.body;
+  console.log(req.body);
   try {
-    const ok = await submitIdeaVoteService(idea_id, user_id);
-    if (ok) return send(res, true, "Idea vote successfully done");
-    send(res, false, "Idea vote error");
+    if (check_vote) {
+      const ok = await deleteIdeaVoteService(idea_id, user_id);
+      if (ok) return send(res, true, "Idea successfully deleted");
+      send(res, false, "Idea vote error");
+    } else {
+      const ok = await submitIdeaVoteService(idea_id, user_id);
+      if (ok) return send(res, true, "Idea vote successfully done");
+      send(res, false, "Idea vote error");
+    }
   } catch (err) {
     console.error(err);
     send(res, false, err);
-  }
-};
-
-exports.deleteIdeaVote = async (req, res) => {
-  const { idea_id, user_id } = req.params;
-  try {
-    await deleteIdeaVoteService(idea_id, user_id);
-    return send(res, true);
-  } catch (err) {
-    console.error(err);
-    return send(res, false, err);
   }
 };
