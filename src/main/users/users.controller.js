@@ -12,7 +12,7 @@ const {
   getUserService,
   signupService,
   getComitteeUsersService,
-  updateAdminService,
+  updateComitteeService,
   getAllUsersService,
 } = require("./users.service");
 
@@ -94,10 +94,10 @@ exports.validateCredentials = async (req, res) => {
   }
 };
 
-exports.updateAdmin = async (req, res) => {
-  const { email, admin } = req.body;
+exports.updateComittee = async (req, res) => {
+  const { email, comittee } = req.body;
   try {
-    await updateAdminService(email, admin);
+    await updateComitteeService(email, comittee);
     send(res, true);
   } catch (err) {
     console.error(err);
