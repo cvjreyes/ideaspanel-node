@@ -1,4 +1,6 @@
 const pool = require("../../../config/db");
+const { getComitteeUsersService } = require("../users/users.service");
+const { publishIdea } = require("../ideas/ideas.service");
 
 exports.checkIfComitteeUserAlreadyVotedIdea = async (user_id, idea_id) => {
   const [comitteVote] = await pool.query(
@@ -66,5 +68,22 @@ exports.checkForInactiveComitteeMembers = async (
         removeComittee(comitteeMembers[i].id);
       }
     }
+  }
+};
+
+const countTotalIdeaVotes = async (idea_id) => {
+  const [votes] = await pool.query(
+    "SELECT * FROM comittee_votes WHERE idea_id = ?",
+    idea_id
+  );
+  return votes.length;
+};
+
+exports.checkIfAllVotesEmitted = async (idea_id) => {
+  const comitteeMembers = await getComitteeUsersService();
+  const totalComitteeMembers = comitteeMembers.length;
+  const ideaVotes = await countTotalIdeaVotes(idea_id);
+  if (totalComitteeMembers === ideaVotes) {
+    publishIdea(idea_id);
   }
 };

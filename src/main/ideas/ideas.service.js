@@ -42,6 +42,14 @@ exports.getPublishedService = async (user_id) => {
   return denied;
 };
 
+exports.getValidatingService = async (user_id) => {
+  const [denied] = await pool.query(
+    "SELECT * FROM ideas WHERE sent_to_validate = 1 AND user_id = ?",
+    user_id
+  );
+  return denied;
+};
+
 exports.getIdeaService = async (idea_id) => {
   const [idea] = await pool.query("SELECT * FROM ideas WHERE id = ?", idea_id);
   return idea;
