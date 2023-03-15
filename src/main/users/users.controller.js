@@ -1,4 +1,5 @@
 var validator = require("email-validator");
+const multer = require("multer");
 const { generateLink } = require("../../helpers/emails");
 
 const { send } = require("../../helpers/send");
@@ -14,7 +15,23 @@ const {
   getComitteeUsersService,
   updateComitteeService,
   getAllUsersService,
+  changeUserProfilePic,
+  deleteOldProfilePicService,
 } = require("./users.service");
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "images");
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + "-" + file.originalname);
+  },
+});
+
+const uploadFn = multer({
+  storage: storage,
+  limits: { fieldSize: "256mb" },
+}).single("file");
 
 exports.getAllUsers = async (req, res) => {
   try {
@@ -99,6 +116,27 @@ exports.updateComittee = async (req, res) => {
   try {
     await updateComitteeService(email, comittee);
     send(res, true);
+  } catch (err) {
+    console.error(err);
+    send(res, false, err);
+  }
+};
+
+exports.editProfilePic = async (req, res) => {
+  const { user_id } = req.params;
+  const { profile_pic } = await getUserService("id", user_id);
+  try {
+    uploadFn(req, res, async function (err) {
+      if (err instanceof multer.MulterError) {
+        send(res, false, err);
+      } else if (err) {
+        send(res, false, err);
+      }
+      const newImage = `http://localhost:5026/images/${req.file.filename}`;
+      await changeUserProfilePic(user_id, newImage);
+      await deleteOldProfilePicService(profile_pic);
+      send(res, true, "Image updated successfully");
+    });
   } catch (err) {
     console.error(err);
     send(res, false, err);
