@@ -52,7 +52,7 @@ exports.getValidatingService = async (user_id) => {
 
 exports.getIdeaService = async (idea_id) => {
   const [idea] = await pool.query("SELECT * FROM ideas WHERE id = ?", idea_id);
-  return idea;
+  return idea[0];
 };
 
 exports.insertIdeaService = async (user_id, form) => {
