@@ -2,6 +2,7 @@ const { send } = require("../../helpers/send");
 const {
   submitVoteService,
   checkIfComitteeUserAlreadyVotedIdea,
+  checkIfAllVotesEmitted,
 } = require("./comiitte_votes.service");
 
 exports.submitVote = async (req, res) => {
@@ -13,6 +14,7 @@ exports.submitVote = async (req, res) => {
     );
     if (alreadyVoted) return send(res, true);
     await submitVoteService(idea_id, user_id, vote);
+    await checkIfAllVotesEmitted(idea_id);
     return send(res, true, "Vote successfully emitted");
   } catch (err) {
     console.error(err);
