@@ -16,3 +16,12 @@ exports.addCommentService = async (idea_id, user_id, comment) => {
 
   return addComment;
 };
+
+exports.deleteCommentService = async (comment_id) => {
+  const [deleteComment] = await pool.query(
+    "DELETE FROM comments WHERE id = ?",
+    [comment_id]
+  );
+
+  return deleteComment;
+};

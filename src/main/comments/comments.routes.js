@@ -6,4 +6,6 @@ router.get("/get_comments_from_idea/:idea_id", checkAuth, controller.getComments
 
 router.post("/add_comment", checkAuth, controller.addComment);
 
+router.delete("/delete_comment/:comment_id", checkAuth, controller.deleteComment);
+
 module.exports = router;
