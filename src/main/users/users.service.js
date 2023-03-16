@@ -1,3 +1,5 @@
+const fs = require("fs");
+require("dotenv").config();
 const pool = require("../../../config/db");
 const { send } = require("../../helpers/send");
 const { getName } = require("../../helpers/users");
@@ -40,4 +42,19 @@ exports.updateComitteeService = async (email, comittee) => {
     comittee,
     email,
   ]);
+};
+
+exports.changeUserProfilePic = async (user_id, newImage) => {
+  await pool.query("UPDATE users SET profile_pic = ? WHERE id = ?", [
+    newImage,
+    user_id,
+  ]);
+};
+
+exports.deleteOldProfilePicService = async (profile_pic) => {
+  const path = "." + profile_pic.substring(process.env.NODE_SERVER_URL.length);
+  fs.unlink(path, function (err) {
+    if (err) console.error(err);
+    else console.info("Image deleted successfully");
+  });
 };

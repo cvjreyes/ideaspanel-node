@@ -16,4 +16,6 @@ router.post("/validate_credentials", controller.validateCredentials);
 
 router.post("/update_comittee", checkAuth, controller.updateComittee);
 
+router.post("/edit_profile_pic/:user_id", checkAuth, controller.editProfilePic);
+
 module.exports = router;
