@@ -16,6 +16,8 @@ router.get("/get_validating/:user_id", checkAuth, controller.getValidating);
 
 router.get("/get_info/:idea_id", checkAuth, controller.getIdeaInfo);
 
+router.get("/get_all_validating", checkAuth, controller.getAllValidating);
+
 router.post("/upload", checkAuth, controller.upload);
 
 router.post("/upload_image/:idea_id", checkAuth, controller.uploadImage);
