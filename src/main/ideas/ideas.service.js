@@ -55,6 +55,14 @@ exports.getIdeaService = async (idea_id) => {
   return idea[0];
 };
 
+exports.getValidatingService = async (user_id) => {
+  const [ideas] = await pool.query(
+    "SELECT i.*, cv.user_id as voter_id, cv.approved FROM ideas AS i LEFT JOIN comittee_votes AS cv ON i.id = cv.idea_id WHERE sent_to_validate = 1 AND (cv.user_id = ? or cv.user_id IS NULL) ORDER BY sent_to_validate_at",
+    [user_id]
+  );
+  return ideas;
+};
+
 exports.insertIdeaService = async (user_id, form) => {
   const [idea] = await pool.query(
     "INSERT INTO ideas (user_id, title, description, anonymous) VALUES (?, ?, ?, ?)",

@@ -112,6 +112,17 @@ exports.getIdeaInfo = async (req, res) => {
   }
 };
 
+exports.getAllValidating = async (req, res) => {
+  const user = await getUserService("email", req.email);
+  try {
+    const ideas = await getValidatingService(user.id);
+    send(res, true, ideas);
+  } catch (err) {
+    console.error(err);
+    send(res, false, err);
+  }
+};
+
 exports.upload = async (req, res) => {
   const { form } = req.body;
   const user = await getUserService("email", req.email);
