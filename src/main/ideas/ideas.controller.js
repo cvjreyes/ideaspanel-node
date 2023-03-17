@@ -16,6 +16,7 @@ const {
   getDeniedService,
   getPublishedService,
   getValidatingService,
+  getIdeaAndVoteService,
 } = require("./ideas.service");
 const { generateToken, saveTokenIntoDB } = require("../../helpers/token");
 const { generateLink } = require("../../helpers/emails");
@@ -105,6 +106,18 @@ exports.getIdeaInfo = async (req, res) => {
   const { idea_id } = req.params;
   try {
     const idea = await getIdeaService(idea_id);
+    send(res, true, idea);
+  } catch (err) {
+    console.error(err);
+    send(res, false, err);
+  }
+};
+
+exports.getIdeaInfoAndVote = async (req, res) => {
+  const { idea_id } = req.params;
+  try {
+    const user = await getUserService("email", req.email);
+    const idea = await getIdeaAndVoteService(idea_id, user.id);
     send(res, true, idea);
   } catch (err) {
     console.error(err);

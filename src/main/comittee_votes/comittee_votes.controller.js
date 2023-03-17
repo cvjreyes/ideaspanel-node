@@ -3,6 +3,7 @@ const {
   submitVoteService,
   checkIfComitteeUserAlreadyVotedIdea,
   checkIfAllVotesEmitted,
+  updateVoteService,
 } = require("./comiitte_votes.service");
 
 exports.submitVote = async (req, res) => {
@@ -12,8 +13,11 @@ exports.submitVote = async (req, res) => {
       user_id,
       idea_id
     );
-    if (alreadyVoted) return send(res, true);
-    await submitVoteService(idea_id, user_id, vote);
+    if (alreadyVoted) {
+      await updateVoteService(idea_id, vote);
+    } else {
+      await submitVoteService(idea_id, user_id, vote);
+    }
     await checkIfAllVotesEmitted(idea_id);
     return send(res, true, "Vote successfully emitted");
   } catch (err) {

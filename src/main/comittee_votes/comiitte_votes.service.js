@@ -17,6 +17,13 @@ exports.submitVoteService = async (idea_id, user_id, vote) => {
   );
 };
 
+exports.updateVoteService = async (idea_id, vote) => {
+  await pool.query("UPDATE comittee_votes SET approved = ? WHERE idea_id = ?", [
+    vote,
+    idea_id,
+  ]);
+};
+
 exports.countPositiveVotes = async (idea_id) => {
   const [positiveVotes] = await pool.query(
     "SELECT COUNT(*) as 'total' FROM comittee_votes WHERE approved = 1 AND idea_id = ? ",
