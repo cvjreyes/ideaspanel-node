@@ -101,3 +101,10 @@ exports.checkIfAllVotesEmitted = async (idea_id) => {
     }
   }
 };
+
+exports.deleteComitteeVotesService = async (user_id) => {
+  await pool.query(
+    "DELETE FROM comittee_votes WHERE user_id = ? AND idea_id IN (SELECT id FROM ideas WHERE sent_to_validate = 1)",
+    user_id
+  );
+};
