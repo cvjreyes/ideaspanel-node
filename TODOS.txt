@@ -2,5 +2,6 @@ TODO:
 - add checking token expiracy ONE USE https://stackoverflow.com/questions/51292406/check-if-token-expired-using-this-jwt-library
 - URL shortener
 - Make views in Workbench for every page of the tool
+- If you log in with other email that doesn't contain technipenergies.com the server stops working
 
 DONE:
