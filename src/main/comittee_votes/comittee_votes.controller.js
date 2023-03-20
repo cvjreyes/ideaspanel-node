@@ -14,7 +14,7 @@ exports.submitVote = async (req, res) => {
       idea_id
     );
     if (alreadyVoted) {
-      await updateVoteService(idea_id, vote);
+      await updateVoteService(idea_id, user_id, vote);
     } else {
       await submitVoteService(idea_id, user_id, vote);
     }
