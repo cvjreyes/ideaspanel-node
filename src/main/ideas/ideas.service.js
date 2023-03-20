@@ -110,7 +110,7 @@ exports.getSentToValidate = async () => {
 
 exports.declineIdea = async (idea_id) => {
   await pool.query(
-    "UPDATE ideas SET sent_to_validate = 0, draft = 0 WHERE id = ?",
+    "UPDATE ideas SET sent_to_validate = 0, draft = 0, published = 0 WHERE id = ?",
     idea_id
   );
 };

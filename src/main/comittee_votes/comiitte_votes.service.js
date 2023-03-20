@@ -1,6 +1,6 @@
 const pool = require("../../../config/db");
 const { getComitteeUsersService } = require("../users/users.service");
-const { publishIdea } = require("../ideas/ideas.service");
+const { publishIdea, declineIdea } = require("../ideas/ideas.service");
 
 exports.checkIfComitteeUserAlreadyVotedIdea = async (user_id, idea_id) => {
   const [comitteVote] = await pool.query(
@@ -90,7 +90,13 @@ exports.checkIfAllVotesEmitted = async (idea_id) => {
   const comitteeMembers = await getComitteeUsersService();
   const totalComitteeMembers = comitteeMembers.length;
   const ideaVotes = await countTotalIdeaVotes(idea_id);
-  if (totalComitteeMembers === ideaVotes) {
+  const positiveVotes = await this.countPositiveVotes(idea_id);
+  if (
+    totalComitteeMembers === ideaVotes &&
+    positiveVotes > totalComitteeMembers / 2
+  ) {
     publishIdea(idea_id);
+  } else {
+    declineIdea(idea_id);
   }
 };
