@@ -134,7 +134,9 @@ exports.editProfilePic = async (req, res) => {
       }
       const newImage = `http://localhost:5026/images/${req.file.filename}`;
       await changeUserProfilePic(user_id, newImage);
-      await deleteOldProfilePicService(profile_pic);
+      if (!profile_pic.includes("default.png")) {
+        await deleteOldProfilePicService(profile_pic);
+      }
       send(res, true, "Image updated successfully");
     });
   } catch (err) {

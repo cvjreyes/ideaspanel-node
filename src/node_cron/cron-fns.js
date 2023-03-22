@@ -19,12 +19,12 @@ exports.checkVoting = async () => {
     const daysPassed = calculateDaysPassed(idea.sent_to_validate_at);
     const positiveVotes = await countPositiveVotes(idea.id);
     if (daysPassed > 14) {
-      if (positiveVotes >= totalComitteeMembers / 2) {
+      if (positiveVotes > totalComitteeMembers / 2) {
         publishIdea(idea.id);
       } else {
         declineIdea(idea.id);
       }
     }
-    checkForInactiveComitteeMembers(comitteeMembers, idea.id, idea.user_id);
+    // checkForInactiveComitteeMembers(comitteeMembers, idea.id, idea.user_id);
   }
 };
