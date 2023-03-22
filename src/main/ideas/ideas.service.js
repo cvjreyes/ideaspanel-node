@@ -42,12 +42,12 @@ exports.getPublishedService = async (user_id) => {
   return denied;
 };
 
-exports.getValidatingService = async (user_id) => {
-  const [denied] = await pool.query(
+exports.getUserValidatingService = async (user_id) => {
+  const [ideas] = await pool.query(
     "SELECT * FROM ideas WHERE sent_to_validate = 1 AND user_id = ?",
     user_id
   );
-  return denied;
+  return ideas;
 };
 
 exports.getIdeaService = async (idea_id) => {

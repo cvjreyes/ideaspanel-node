@@ -17,6 +17,7 @@ const {
   getPublishedService,
   getValidatingService,
   getIdeaAndVoteService,
+  getUserValidatingService,
 } = require("./ideas.service");
 const { generateToken, saveTokenIntoDB } = require("../../helpers/token");
 const { generateLink } = require("../../helpers/emails");
@@ -92,10 +93,10 @@ exports.getPublished = async (req, res) => {
   }
 };
 
-exports.getValidating = async (req, res) => {
+exports.getUserValidating = async (req, res) => {
   const { user_id } = req.params;
   try {
-    const validating = await getValidatingService(user_id);
+    const validating = await getUserValidatingService(user_id);
     send(res, true, validating);
   } catch (err) {
     console.error(err);
