@@ -35,7 +35,7 @@ exports.countPositiveVotes = async (idea_id) => {
 
 const checkVote = async (idea_id, comittee_id) => {
   const [hasVote] = await pool.query(
-    "SELECT * FROM comittee_votes WHERE idea_id = ? AND user_id = ?",
+    "SELECT * FROM comittee_votes WHERE idea_id = ? AND user_id = ? AND approved IS NULL",
     [idea_id, comittee_id]
   );
   return hasVote[0];

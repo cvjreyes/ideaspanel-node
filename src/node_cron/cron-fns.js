@@ -14,6 +14,7 @@ exports.checkVoting = async () => {
   const sentToValidate = await getSentToValidate();
   const comitteeMembers = await getComitteeUsersService();
   const totalComitteeMembers = comitteeMembers.length;
+
   for (let i = 0; i < sentToValidate.length; i++) {
     const idea = sentToValidate[i];
     const daysPassed = calculateDaysPassed(idea.sent_to_validate_at);
@@ -24,7 +25,7 @@ exports.checkVoting = async () => {
       } else {
         declineIdea(idea.id);
       }
+      checkForInactiveComitteeMembers(comitteeMembers, idea.id, idea.user_id);
     }
-    // checkForInactiveComitteeMembers(comitteeMembers, idea.id, idea.user_id);
   }
 };
