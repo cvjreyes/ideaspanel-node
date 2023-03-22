@@ -12,7 +12,7 @@ router.get("/get_denied/:user_id", checkAuth, controller.getDenied);
 
 router.get("/get_published/:user_id", checkAuth, controller.getPublished);
 
-router.get("/get_user_validating/:user_id", checkAuth, controller.getUserValidating);
+router.get("/get_validating/:user_id", checkAuth, controller.getValidating);
 
 router.get("/get_info/:idea_id", checkAuth, controller.getIdeaInfo);
 

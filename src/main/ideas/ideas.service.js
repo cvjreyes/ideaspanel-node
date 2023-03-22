@@ -42,12 +42,12 @@ exports.getPublishedService = async (user_id) => {
   return denied;
 };
 
-exports.getUserValidatingService = async (user_id) => {
-  const [ideas] = await pool.query(
+exports.getValidatingService = async (user_id) => {
+  const [denied] = await pool.query(
     "SELECT * FROM ideas WHERE sent_to_validate = 1 AND user_id = ?",
     user_id
   );
-  return ideas;
+  return denied;
 };
 
 exports.getIdeaService = async (idea_id) => {
@@ -63,7 +63,7 @@ exports.getIdeaAndVoteService = async (idea_id, user_id) => {
   return idea[0];
 };
 
-exports.getValidatingService = async (user_id) => {
+exports.getAllValidatingService = async (user_id) => {
   const [ideas] = await pool.query(
     "SELECT i.*, cv.user_id as voter_id, cv.approved FROM ideas AS i LEFT JOIN comittee_votes AS cv ON i.id = cv.idea_id WHERE sent_to_validate = 1 AND (cv.user_id = ? or cv.user_id IS NULL) ORDER BY sent_to_validate_at",
     [user_id]
