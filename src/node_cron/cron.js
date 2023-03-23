@@ -3,7 +3,7 @@ const { checkVoting } = require("./cron-fns");
 
 const cronFn = () => {
   // cron.schedule("* * * * *", () => {
-  cron.schedule("* * 23 * 1-5", () => {
+  cron.schedule("0 23 * * 1-5", () => {
     checkVoting();
     console.info(
       new Date(Date.now()).toLocaleDateString(),
