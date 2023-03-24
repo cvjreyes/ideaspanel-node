@@ -2,10 +2,17 @@ const fs = require("fs");
 require("dotenv").config();
 const pool = require("../../../config/db");
 
+exports.getPagePublishedService = async (page) => {
+  const [results] = await pool.query(
+    "SELECT COUNT(*) as pages FROM ideas WHERE published = 1"
+  );
+  return (results[0].pages/4).toFixed();
+};
+
 exports.getSomeIdeasService = async (page) => {
   const [results] = await pool.query(
-    "SELECT ideas.*, users.name, users.profile_pic FROM ideas JOIN users ON ideas.user_id = users.id AND published = 1 LIMIT 20 OFFSET ?",
-    page * 20
+    "SELECT ideas.*, users.name, users.profile_pic FROM ideas JOIN users ON ideas.user_id = users.id AND published = 1 LIMIT 4 OFFSET ?",
+    page * 4
   );
   return results;
 };

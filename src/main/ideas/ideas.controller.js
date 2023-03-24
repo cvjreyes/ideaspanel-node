@@ -18,6 +18,7 @@ const {
   getValidatingService,
   getIdeaAndVoteService,
   getAllValidatingService,
+  getPagePublishedService,
 } = require("./ideas.service");
 const { generateToken, saveTokenIntoDB } = require("../../helpers/token");
 const { generateLink } = require("../../helpers/emails");
@@ -37,6 +38,16 @@ const uploadFn = multer({
   storage: storage,
   limits: { fieldSize: "256mb" },
 }).single("file");
+
+exports.getPagePublished = async (req, res) => {
+  try {
+    const pages = await getPagePublishedService();
+    send(res, true, pages);
+  } catch (err) {
+    console.error(err);
+    send(res, false, err);
+  }
+};
 
 exports.getSome = async (req, res) => {
   const { page } = req.params;
