@@ -93,7 +93,6 @@ exports.checkIfAllVotesEmitted = async (idea_id) => {
   const ideaVotes = await countTotalIdeaVotes(idea_id);
   const positiveVotes = await this.countPositiveVotes(idea_id);
   if (totalComitteeMembers === ideaVotes) {
-    console.log(totalComitteeMembers, ideaVotes);
     if (positiveVotes > totalComitteeMembers / 2) {
       publishIdea(idea_id);
     } else {
