@@ -6,7 +6,7 @@ exports.getPagePublishedService = async () => {
   const [results] = await pool.query(
     "SELECT COUNT(*) as pages FROM ideas WHERE published = 1"
   );
-  return (results[0].pages / 4).toFixed();
+  return (results[0].pages / 3).toFixed();
 };
 
 exports.getSomeIdeasService = async (page) => {
@@ -22,7 +22,7 @@ exports.getFilterPagePublishedService = async (title) => {
     "SELECT COUNT(*) as pages FROM ideas WHERE published = 1 AND title LIKE ?",
     [`%${title}%`]
   );
-  return (results[0].pages / 4).toFixed();
+  return (results[0].pages / 3).toFixed();
 };
 
 exports.getSomeFilterIdeasService = async (title, page) => {
@@ -58,19 +58,19 @@ exports.getDeniedService = async (user_id) => {
 };
 
 exports.getPublishedService = async (user_id) => {
-  const [denied] = await pool.query(
+  const [published] = await pool.query(
     "SELECT * FROM ideas WHERE published = 1 AND user_id = ?",
     user_id
   );
-  return denied;
+  return published;
 };
 
 exports.getValidatingService = async (user_id) => {
-  const [denied] = await pool.query(
+  const [validate] = await pool.query(
     "SELECT * FROM ideas WHERE sent_to_validate = 1 AND user_id = ?",
     user_id
   );
-  return denied;
+  return validate;
 };
 
 exports.getIdeaService = async (idea_id) => {
