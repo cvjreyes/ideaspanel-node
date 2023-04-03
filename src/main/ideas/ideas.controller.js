@@ -18,9 +18,6 @@ const {
   getValidatingService,
   getIdeaAndVoteService,
   getAllValidatingService,
-  getPagePublishedService,
-  getFilterPagePublishedService,
-  getSomeFilterIdeasService,
 } = require("./ideas.service");
 const { generateToken, saveTokenIntoDB } = require("../../helpers/token");
 const { generateLink } = require("../../helpers/emails");
@@ -41,42 +38,9 @@ const uploadFn = multer({
   limits: { fieldSize: "256mb" },
 }).single("file");
 
-exports.getPagePublished = async (req, res) => {
-  try {
-    const pages = await getPagePublishedService();
-    send(res, true, pages);
-  } catch (err) {
-    console.error(err);
-    send(res, false, err);
-  }
-};
-
 exports.getSome = async (req, res) => {
-  const { page } = req.params;
   try {
-    const ideas = await getSomeIdeasService(page);
-    send(res, true, ideas);
-  } catch (err) {
-    console.error(err);
-    send(res, false, err);
-  }
-};
-
-exports.getFilterPagePublished = async (req, res) => {
-  const { title } = req.params;
-  try {
-    const pages = await getFilterPagePublishedService(title);
-    send(res, true, pages);
-  } catch (err) {
-    console.error(err);
-    send(res, false, err);
-  }
-};
-
-exports.getSomeFilter = async (req, res) => {
-  const { title, page } = req.params;
-  try {
-    const ideas = await getSomeFilterIdeasService(title, page);
+    const ideas = await getSomeIdeasService();
     send(res, true, ideas);
   } catch (err) {
     console.error(err);
