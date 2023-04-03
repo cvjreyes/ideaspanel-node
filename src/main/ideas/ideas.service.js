@@ -4,7 +4,7 @@ const pool = require("../../../config/db");
 
 exports.getSomeIdeasService = async () => {
   const [results] = await pool.query(
-    "SELECT ideas.*, users.name, users.profile_pic, COUNT(comments.id) AS comment_count FROM ideas JOIN users ON ideas.user_id = users.id LEFT JOIN comments ON ideas.id = comments.idea_id GROUP BY ideas.id, users.id AND published = 1",
+    "SELECT ideas.*, users.name, users.profile_pic, COUNT(comments.id) AS comment_count FROM ideas JOIN users ON ideas.user_id = users.id LEFT JOIN comments ON ideas.id = comments.idea_id GROUP BY ideas.id, users.id AND published = 1 ORDER BY published_at DESC",
   );
   return results;
 };
