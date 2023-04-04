@@ -59,6 +59,28 @@ exports.toApprove = async (req, res) => {
   }
 };
 
+exports.getProfileIdeas = async (req, res) => {
+  const { user_id, type } = req.params;
+  try {
+    let results = {}
+    if (type === "Published") {
+      results = await getPublishedService(user_id)
+    } else if(type === "Denied") {
+      results = await getDeniedService(user_id)
+    } else if(type === "Validating") {
+      results = await getValidatingService(user_id)
+    } else if(type === "Drafts") {
+      results = await getDraftsService(user_id)
+    } else {
+      results = await getPublishedService(user_id)
+    }
+    send(res, true, results);
+  } catch (err) {
+    console.error(err);
+    send(res, false, err);
+  }
+};
+
 exports.getDrafts = async (req, res) => {
   const { user_id } = req.params;
   try {
