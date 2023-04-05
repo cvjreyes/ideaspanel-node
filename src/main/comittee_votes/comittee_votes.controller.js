@@ -35,6 +35,7 @@ exports.submitComitteeVotes = async (req, res) => {
     for (let i = 0; i < ideasSentToValidate.length; i++) {
       const idea_id = ideasSentToValidate[i].id;
       await submitVoteService(idea_id, user_id, null);
+      await checkIfAllVotesEmitted(idea_id);
     }
     send(res, true, "Vote successfully emitted");
   } catch (err) {
@@ -47,6 +48,11 @@ exports.deleteComitteeVotes = async (req, res) => {
   const { user_id } = req.params;
   try {
     await deleteComitteeVotesService(user_id);
+    const ideasSentToValidate = await getSentToValidate();
+    for (let i = 0; i < ideasSentToValidate.length; i++) {
+      const idea_id = ideasSentToValidate[i].id;
+      await checkIfAllVotesEmitted(idea_id);
+    }
     send(res, true, "Votes deleted from user");
   } catch (err) {
     console.error(err);
