@@ -91,7 +91,6 @@ exports.updateIdeaService = async (idea, publish) => {
 
 exports.deleteIdeaImgService = async (idea_id) => {
   const idea = await this.getIdeaService(idea_id);
-  console.log(idea.image);
   const path =
     "." + idea.image.substring(process.env.NODE_SERVER_URL.length);
   fs.unlink(path, function (err) {
