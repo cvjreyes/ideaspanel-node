@@ -11,7 +11,7 @@ const {
 const { sendEmail } = require("../emails/emails.services");
 const {
   getUserService,
-  signupService,
+  createUserService,
   getComitteeUsersService,
   updateComitteeService,
   getAllUsersService,
@@ -84,7 +84,15 @@ exports.login = async (req, res) => {
     const validatedEmail = validator.validate(email);
     if (!validatedEmail) return send(res, false, "Invalid credentials");
     const user = await getUserService("email", email);
-    const user_id = !user ? await signupService(res, email) : user.id;
+    let user_id = 0
+    if (!user) {
+      const regex = /technipenergies.com$/;
+      if (!regex.exec(email))
+        return send(res, false, "Your email must belong to Technip Energies");
+      user_id = await createUserService(email);
+    } else {
+      user_id = user.id
+    }
     const token = generateToken(email);
     await saveTokenIntoDB(email, token);
     const link = generateLink("log_in", user_id, token);
