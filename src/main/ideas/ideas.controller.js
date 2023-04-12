@@ -22,7 +22,10 @@ const {
 const { generateToken, saveTokenIntoDB } = require("../../helpers/token");
 const { generateLink } = require("../../helpers/emails");
 const { sendEmail } = require("../emails/emails.services");
-const { submitVoteService, submitVoteNullService } = require("../comittee_votes/comiitte_votes.service");
+const {
+  submitVoteService,
+  submitVoteNullService,
+} = require("../comittee_votes/comiitte_votes.service");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -62,17 +65,17 @@ exports.toApprove = async (req, res) => {
 exports.getProfileIdeas = async (req, res) => {
   const { user_id, type } = req.params;
   try {
-    let results = {}
+    let results = {};
     if (type === "Published") {
-      results = await getPublishedService(user_id)
-    } else if(type === "Denied") {
-      results = await getDeniedService(user_id)
-    } else if(type === "Validating") {
-      results = await getValidatingService(user_id)
-    } else if(type === "Drafts") {
-      results = await getDraftsService(user_id)
+      results = await getPublishedService(user_id);
+    } else if (type === "Denied") {
+      results = await getDeniedService(user_id);
+    } else if (type === "Validating") {
+      results = await getValidatingService(user_id);
+    } else if (type === "Drafts") {
+      results = await getDraftsService(user_id);
     } else {
-      results = await getPublishedService(user_id)
+      results = await getPublishedService(user_id);
     }
     send(res, true, results);
   } catch (err) {
@@ -195,18 +198,20 @@ exports.update = async (req, res) => {
   const { form, publish } = req.body;
   try {
     await updateIdeaService(form, publish);
-    const users = await getComitteeUsersService();
-    for (let i = 0; i < users.length; i++) {
-      // const token = generateToken(users[i].email);
-      // await saveTokenIntoDB(users[i].email, token);
-      // const link = generateLink("log_in", users[i].id, token);
-      // await sendEmail(
-      //   users[i].email,
-      //   "IdeasPanel: Comittee Idea",
-      //   "comittee",
-      //   link
-      // );
-      await submitVoteService(form.id, users[i].id, null)
+    if (publish) {
+      const users = await getComitteeUsersService();
+      for (let i = 0; i < users.length; i++) {
+        // const token = generateToken(users[i].email);
+        // await saveTokenIntoDB(users[i].email, token);
+        // const link = generateLink("log_in", users[i].id, token);
+        // await sendEmail(
+        //   users[i].email,
+        //   "IdeasPanel: Comittee Idea",
+        //   "comittee",
+        //   link
+        // );
+        await submitVoteService(form.id, users[i].id, null);
+      }
     }
     send(res, true);
   } catch (err) {
