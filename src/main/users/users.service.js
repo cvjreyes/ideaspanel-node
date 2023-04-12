@@ -30,13 +30,6 @@ exports.createUserService = async (email) => {
   return created.insertId;
 };
 
-exports.signupService = async (res, email) => {
-  const regex = /technipenergies.com$/;
-  if (!regex.exec(email))
-    return send(res, false, "Your email must belong to Technip Energies");
-  return await this.createUserService(email);
-};
-
 exports.updateComitteeService = async (email, comittee) => {
   await pool.query("UPDATE users SET isComittee = ? WHERE email = ?", [
     comittee,
