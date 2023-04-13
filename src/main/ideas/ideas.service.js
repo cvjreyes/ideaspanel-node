@@ -83,9 +83,9 @@ exports.addImageService = async (id, image) => {
 };
 
 exports.updateIdeaService = async (idea, publish) => {
-  let anonymous = 0
+  let anonymous = 0;
   if (idea.anonymous) {
-    anonymous = 1
+    anonymous = 1;
   }
   await pool.query(
     "UPDATE ideas SET title = ?, description = ?, anonymous = ?, sent_to_validate = ?, draft = ?, sent_to_validate_at = CURRENT_TIMESTAMP WHERE id = ?",
@@ -95,11 +95,13 @@ exports.updateIdeaService = async (idea, publish) => {
 
 exports.deleteIdeaImgService = async (idea_id) => {
   const idea = await this.getIdeaService(idea_id);
-  const path = "." + idea.image.substring(process.env.NODE_SERVER_URL.length);
-  fs.unlink(path, function (err) {
-    if (err) console.error(err);
-    else console.info("Image deleted successfully");
-  });
+  if (idea.image) {
+    const path = "." + idea.image.substring(process.env.NODE_SERVER_URL.length);
+    fs.unlink(path, function (err) {
+      if (err) console.error(err);
+      else console.info("Image deleted successfully");
+    });
+  }
   await pool.query("UPDATE ideas SET image = null WHERE id = ?", idea_id);
 };
 
