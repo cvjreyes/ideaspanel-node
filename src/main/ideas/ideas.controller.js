@@ -184,7 +184,13 @@ exports.uploadImage = async (req, res) => {
         send(res, false, err);
       }
       // here we can add filename or path to the DB
-      const newImage = `http://localhost:5026/images/${req.file.filename}`;
+      let newImage;
+      if (req.body.file) {
+        const imageURL = req.body.file.split('/')
+        newImage = `http://localhost:5026/images/${imageURL[4]}`;
+      } else {
+        newImage = `http://localhost:5026/images/${req.file.filename}`;
+      }
       await addImageService(idea_id, newImage);
       send(res, true);
     });
