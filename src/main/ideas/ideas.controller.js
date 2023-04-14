@@ -17,10 +17,15 @@ const {
   getPublishedService,
   getValidatingService,
   getIdeaAndVoteService,
+  getAllValidatingService,
 } = require("./ideas.service");
 const { generateToken, saveTokenIntoDB } = require("../../helpers/token");
 const { generateLink } = require("../../helpers/emails");
 const { sendEmail } = require("../emails/emails.services");
+const {
+  submitVoteService,
+  submitVoteNullService,
+} = require("../comittee_votes/comiitte_votes.service");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -37,9 +42,8 @@ const uploadFn = multer({
 }).single("file");
 
 exports.getSome = async (req, res) => {
-  const { page } = req.params;
   try {
-    const ideas = await getSomeIdeasService(page);
+    const ideas = await getSomeIdeasService();
     send(res, true, ideas);
   } catch (err) {
     console.error(err);
@@ -52,6 +56,28 @@ exports.toApprove = async (req, res) => {
   try {
     const idea = await getOldestIdeaToApproveService(user_id);
     send(res, true, idea);
+  } catch (err) {
+    console.error(err);
+    send(res, false, err);
+  }
+};
+
+exports.getProfileIdeas = async (req, res) => {
+  const { user_id, type } = req.params;
+  try {
+    let results = {};
+    if (type === "Published") {
+      results = await getPublishedService(user_id);
+    } else if (type === "Denied") {
+      results = await getDeniedService(user_id);
+    } else if (type === "Validating") {
+      results = await getValidatingService(user_id);
+    } else if (type === "Drafts") {
+      results = await getDraftsService(user_id);
+    } else {
+      results = await getPublishedService(user_id);
+    }
+    send(res, true, results);
   } catch (err) {
     console.error(err);
     send(res, false, err);
@@ -128,7 +154,7 @@ exports.getIdeaInfoAndVote = async (req, res) => {
 exports.getAllValidating = async (req, res) => {
   const user = await getUserService("email", req.email);
   try {
-    const ideas = await getValidatingService(user.id);
+    const ideas = await getAllValidatingService(user.id);
     send(res, true, ideas);
   } catch (err) {
     console.error(err);
@@ -158,7 +184,13 @@ exports.uploadImage = async (req, res) => {
         send(res, false, err);
       }
       // here we can add filename or path to the DB
-      const newImage = `http://localhost:5026/images/${req.file.filename}`;
+      let newImage;
+      if (req.body.file) {
+        const imageURL = req.body.file.split('/')
+        newImage = `http://localhost:5026/images/${imageURL[4]}`;
+      } else {
+        newImage = `http://localhost:5026/images/${req.file.filename}`;
+      }
       await addImageService(idea_id, newImage);
       send(res, true);
     });
@@ -171,19 +203,21 @@ exports.uploadImage = async (req, res) => {
 exports.update = async (req, res) => {
   const { form, publish } = req.body;
   try {
-    // falta que cuando la idea la has publicado tu que no se te envie el correo, aunque seas comittee
     await updateIdeaService(form, publish);
-    const users = await getComitteeUsersService();
-    for (let i = 0; i < users.length; i++) {
-      const token = generateToken(users[i].email);
-      await saveTokenIntoDB(users[i].email, token);
-      const link = generateLink("log_in", users[i].id, token);
-      await sendEmail(
-        users[i].email,
-        "IdeasPanel: Comittee Idea",
-        "comittee",
-        link
-      );
+    if (publish) {
+      const users = await getComitteeUsersService();
+      for (let i = 0; i < users.length; i++) {
+        // const token = generateToken(users[i].email);
+        // await saveTokenIntoDB(users[i].email, token);
+        // const link = generateLink("log_in", users[i].id, token);
+        // await sendEmail(
+        //   users[i].email,
+        //   "IdeasPanel: Comittee Idea",
+        //   "comittee",
+        //   link
+        // );
+        await submitVoteService(form.id, users[i].id, null);
+      }
     }
     send(res, true);
   } catch (err) {

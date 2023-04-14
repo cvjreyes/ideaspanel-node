@@ -2,9 +2,11 @@ const router = require("express").Router(),
   controller = require("./ideas.controller"),
   { checkAuth } = require("../../middlewares/checkAuth");
 
-router.get("/get_some/:page", checkAuth, controller.getSome);
+router.get("/get_some", checkAuth, controller.getSome);
 
 router.get("/to_approve/:user_id", checkAuth, controller.toApprove);
+
+router.get("/get_profile_ideas/:user_id/:type", checkAuth, controller.getProfileIdeas);
 
 router.get("/get_drafts/:user_id", checkAuth, controller.getDrafts);
 

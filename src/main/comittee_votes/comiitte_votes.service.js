@@ -17,10 +17,11 @@ exports.submitVoteService = async (idea_id, user_id, vote) => {
   );
 };
 
-exports.updateVoteService = async (idea_id, vote) => {
-  await pool.query("UPDATE comittee_votes SET approved = ? WHERE idea_id = ?", [
+exports.updateVoteService = async (idea_id, user_id, vote) => {
+  await pool.query("UPDATE comittee_votes SET approved = ? WHERE idea_id = ? AND user_id = ?", [
     vote,
     idea_id,
+    user_id
   ]);
 };
 
@@ -34,7 +35,7 @@ exports.countPositiveVotes = async (idea_id) => {
 
 const checkVote = async (idea_id, comittee_id) => {
   const [hasVote] = await pool.query(
-    "SELECT * FROM comittee_votes WHERE idea_id = ? AND user_id = ?",
+    "SELECT * FROM comittee_votes WHERE idea_id = ? AND user_id = ? AND approved IS NULL",
     [idea_id, comittee_id]
   );
   return hasVote[0];
@@ -80,7 +81,7 @@ exports.checkForInactiveComitteeMembers = async (
 
 const countTotalIdeaVotes = async (idea_id) => {
   const [votes] = await pool.query(
-    "SELECT * FROM comittee_votes WHERE idea_id = ?",
+    "SELECT * FROM comittee_votes WHERE idea_id = ? AND approved IS NOT NULL",
     idea_id
   );
   return votes.length;
@@ -91,12 +92,18 @@ exports.checkIfAllVotesEmitted = async (idea_id) => {
   const totalComitteeMembers = comitteeMembers.length;
   const ideaVotes = await countTotalIdeaVotes(idea_id);
   const positiveVotes = await this.countPositiveVotes(idea_id);
-  if (
-    totalComitteeMembers === ideaVotes &&
-    positiveVotes > totalComitteeMembers / 2
-  ) {
-    publishIdea(idea_id);
-  } else {
-    declineIdea(idea_id);
+  if (totalComitteeMembers === ideaVotes) {
+    if (positiveVotes > totalComitteeMembers / 2) {
+      publishIdea(idea_id);
+    } else {
+      declineIdea(idea_id);
+    }
   }
+};
+
+exports.deleteComitteeVotesService = async (user_id) => {
+  await pool.query(
+    "DELETE FROM comittee_votes WHERE user_id = ? AND idea_id IN (SELECT id FROM ideas WHERE sent_to_validate = 1)",
+    user_id
+  );
 };

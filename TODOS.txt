@@ -3,5 +3,6 @@ TODO:
 - URL shortener
 - Make views in Workbench for every page of the tool
 - If you log in with other email that doesn't contain technipenergies.com the server stops working
+- Deleted image from edit idea is not working
 
 DONE:

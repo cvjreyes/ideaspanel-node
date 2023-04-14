@@ -24,17 +24,10 @@ exports.getUserService = async (key, value) => {
 
 exports.createUserService = async (email) => {
   const [created] = await pool.query(
-    "INSERT INTO users (email, name, profile_pic) VALUES (?, ?, ?)",
-    [email, getName(email), `${process.env.NODE_SERVER_URL}/images/default.png`]
+    "INSERT INTO users (email, name) VALUES (?, ?)",
+    [email, getName(email)]
   );
   return created.insertId;
-};
-
-exports.signupService = async (res, email) => {
-  const regex = /technipenergies.com$/;
-  if (!regex.exec(email))
-    return send(res, false, "Your email must belong to Technip Energies");
-  return await this.createUserService(email);
 };
 
 exports.updateComitteeService = async (email, comittee) => {
