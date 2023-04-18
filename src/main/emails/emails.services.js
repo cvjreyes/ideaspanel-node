@@ -12,6 +12,9 @@ const transport = nodemailer.createTransport({
     user: process.env.NODE_NODEMAILER_EMAIL,
     pass: process.env.NODE_NODEMAILER_PASSWORD,
   },
+  tls: {
+    rejectUnauthorized: false,
+  },
 });
 
 const options = {
