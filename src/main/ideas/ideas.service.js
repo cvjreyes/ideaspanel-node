@@ -9,6 +9,20 @@ exports.getSomeIdeasService = async () => {
   return results;
 };
 
+exports.getOrderOldDateService = async () => {
+  const [results] = await pool.query(
+    "SELECT ideas.*, users.name, users.profile_pic, users.email, COUNT(DISTINCT comments.id) AS comment_count, COUNT(DISTINCT idea_votes.id) AS like_count FROM ideas AS ideas JOIN users AS users ON users.id = ideas.user_id LEFT JOIN comments AS comments ON comments.idea_id = ideas.id LEFT JOIN idea_votes AS idea_votes ON idea_votes.idea_id = ideas.id WHERE ideas.published = 1 GROUP BY ideas.id"
+  );
+  return results;
+};
+
+exports.getOrderLikesService = async () => {
+  const [results] = await pool.query(
+    "SELECT ideas.*, users.name, users.profile_pic, users.email, COUNT(DISTINCT comments.id) AS comment_count, COUNT(DISTINCT idea_votes.id) AS like_count FROM ideas AS ideas JOIN users AS users ON users.id = ideas.user_id LEFT JOIN comments AS comments ON comments.idea_id = ideas.id LEFT JOIN idea_votes AS idea_votes ON idea_votes.idea_id = ideas.id WHERE ideas.published = 1 GROUP BY ideas.id ORDER BY like_count DESC"
+  );
+  return results;
+};
+
 exports.getOldestIdeaToApproveService = async (user_id) => {
   const [idea] = await pool.query(
     "SELECT i.* FROM ideas as i LEFT JOIN comittee_votes as v ON i.id = v.idea_id WHERE i.sent_to_validate = 1 AND (v.user_id IS NULL OR v.user_id = ?) AND (v.user_id IS NULL OR v.user_id != ?) ORDER BY i.sent_to_validate_at LIMIT 1",
