@@ -18,6 +18,8 @@ const {
   getValidatingService,
   getIdeaAndVoteService,
   getAllValidatingService,
+  getOrderOldDateService,
+  getOrderLikesService,
 } = require("./ideas.service");
 const { generateToken, saveTokenIntoDB } = require("../../helpers/token");
 const { generateLink } = require("../../helpers/emails");
@@ -44,6 +46,26 @@ const uploadFn = multer({
 exports.getSome = async (req, res) => {
   try {
     const ideas = await getSomeIdeasService();
+    send(res, true, ideas);
+  } catch (err) {
+    console.error(err);
+    send(res, false, err);
+  }
+};
+
+exports.getOrderOldDate = async (req, res) => {
+  try {
+    const ideas = await getOrderOldDateService();
+    send(res, true, ideas);
+  } catch (err) {
+    console.error(err);
+    send(res, false, err);
+  }
+};
+
+exports.getOrderLikes = async (req, res) => {
+  try {
+    const ideas = await getOrderLikesService();
     send(res, true, ideas);
   } catch (err) {
     console.error(err);
