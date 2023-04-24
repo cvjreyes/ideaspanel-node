@@ -209,9 +209,9 @@ exports.uploadImage = async (req, res) => {
       let newImage;
       if (req.body.file) {
         const imageURL = req.body.file.split('/')
-        newImage = `http://localhost:5026/images/${imageURL[4]}`;
+        newImage = `${process.env.NODE_SERVER_URL}/images/${imageURL[4]}`;
       } else {
-        newImage = `http://localhost:5026/images/${req.file.filename}`;
+        newImage = `${process.env.NODE_SERVER_URL}/images/${req.file.filename}`;
       }
       await addImageService(idea_id, newImage);
       send(res, true);
