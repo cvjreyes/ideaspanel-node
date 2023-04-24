@@ -96,6 +96,10 @@ exports.addImageService = async (id, image) => {
   await pool.query("UPDATE ideas SET image = ? WHERE id = ?", [image, id]);
 };
 
+exports.addPdfService = async (id, pdf) => {
+  await pool.query("UPDATE ideas SET pdf = ? WHERE id = ?", [pdf, id]);
+};
+
 exports.updateIdeaService = async (idea, publish) => {
   let anonymous = 0;
   if (idea.anonymous) {
@@ -117,6 +121,18 @@ exports.deleteIdeaImgService = async (idea_id) => {
     });
   }
   await pool.query("UPDATE ideas SET image = null WHERE id = ?", idea_id);
+};
+
+exports.deleteIdeaPdfService = async (idea_id) => {
+  const idea = await this.getIdeaService(idea_id);
+  if (idea.pdf) {
+    const path = "." + idea.pdf.substring(process.env.NODE_SERVER_URL.length);
+    fs.unlink(path, function (err) {
+      if (err) console.error(err);
+      else console.info("Pdf deleted successfully");
+    });
+  }
+  await pool.query("UPDATE ideas SET pdf = null WHERE id = ?", idea_id);
 };
 
 exports.getSentToValidate = async () => {

@@ -34,8 +34,12 @@ router.post("/upload", checkAuth, controller.upload);
 
 router.post("/upload_image/:idea_id", checkAuth, controller.uploadImage);
 
+router.post("/upload_pdf/:idea_id", checkAuth, controller.uploadPdf);
+
 router.post("/update", checkAuth, controller.update);
 
 router.delete("/delete_img/:idea_id", checkAuth, controller.deleteIdeaImg);
+
+router.delete("/delete_pdf/:idea_id", checkAuth, controller.deleteIdeaPdf);
 
 module.exports = router;
