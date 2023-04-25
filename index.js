@@ -38,6 +38,7 @@ app.use("/comittee_votes", require("./src/main/comittee_votes/comittee_votes.rou
 app.use("/comments", require("./src/main/comments/comments.routes"));
 
 app.use("/images", express.static("images"));
+app.use("/pdf", express.static("pdf"));
 
 // NODE-CRON
 require("./src/node_cron/cron")();

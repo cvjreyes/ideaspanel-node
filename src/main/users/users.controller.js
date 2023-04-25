@@ -140,7 +140,7 @@ exports.editProfilePic = async (req, res) => {
       } else if (err) {
         send(res, false, err);
       }
-      const newImage = `http://localhost:5026/images/${req.file.filename}`;
+      const newImage = `${process.env.NODE_SERVER_URL}/images/${req.file.filename}`;
       await changeUserProfilePic(user_id, newImage);
       if (profile_pic) {
         await deleteOldProfilePicService(profile_pic);
