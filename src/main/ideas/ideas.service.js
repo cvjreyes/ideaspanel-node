@@ -86,7 +86,7 @@ exports.getAllValidatingService = async (user_id) => {
 
 exports.insertIdeaService = async (user_id, form) => {
   const [idea] = await pool.query(
-    "INSERT INTO ideas (user_id, title, description) VALUES (?, ?, ?, ?)",
+    "INSERT INTO ideas (user_id, title, description) VALUES (?, ?, ?)",
     [user_id, form.title, form.description]
   );
   return idea.insertId;
