@@ -86,8 +86,8 @@ exports.getAllValidatingService = async (user_id) => {
 
 exports.insertIdeaService = async (user_id, form) => {
   const [idea] = await pool.query(
-    "INSERT INTO ideas (user_id, title, description, anonymous) VALUES (?, ?, ?, ?)",
-    [user_id, form.title, form.description, form.anonymous]
+    "INSERT INTO ideas (user_id, title, description) VALUES (?, ?, ?, ?)",
+    [user_id, form.title, form.description]
   );
   return idea.insertId;
 };
@@ -96,14 +96,14 @@ exports.addImageService = async (id, image) => {
   await pool.query("UPDATE ideas SET image = ? WHERE id = ?", [image, id]);
 };
 
+exports.addPdfService = async (id, pdf) => {
+  await pool.query("UPDATE ideas SET pdf = ? WHERE id = ?", [pdf, id]);
+};
+
 exports.updateIdeaService = async (idea, publish) => {
-  let anonymous = 0;
-  if (idea.anonymous) {
-    anonymous = 1;
-  }
   await pool.query(
-    "UPDATE ideas SET title = ?, description = ?, anonymous = ?, sent_to_validate = ?, draft = ?, sent_to_validate_at = CURRENT_TIMESTAMP WHERE id = ?",
-    [idea.title, idea.description, anonymous, publish, !publish, idea.id]
+    "UPDATE ideas SET title = ?, description = ?, sent_to_validate = ?, draft = ?, sent_to_validate_at = CURRENT_TIMESTAMP WHERE id = ?",
+    [idea.title, idea.description, publish, !publish, idea.id]
   );
 };
 
@@ -117,6 +117,18 @@ exports.deleteIdeaImgService = async (idea_id) => {
     });
   }
   await pool.query("UPDATE ideas SET image = null WHERE id = ?", idea_id);
+};
+
+exports.deleteIdeaPdfService = async (idea_id) => {
+  const idea = await this.getIdeaService(idea_id);
+  if (idea.pdf) {
+    const path = "." + idea.pdf.substring(process.env.NODE_SERVER_URL.length);
+    fs.unlink(path, function (err) {
+      if (err) console.error(err);
+      else console.info("Pdf deleted successfully");
+    });
+  }
+  await pool.query("UPDATE ideas SET pdf = null WHERE id = ?", idea_id);
 };
 
 exports.getSentToValidate = async () => {

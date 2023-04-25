@@ -20,13 +20,14 @@ const {
   getAllValidatingService,
   getOrderOldDateService,
   getOrderLikesService,
+  addPdfService,
+  deleteIdeaPdfService,
 } = require("./ideas.service");
 const { generateToken, saveTokenIntoDB } = require("../../helpers/token");
 const { generateLink } = require("../../helpers/emails");
 const { sendEmail } = require("../emails/emails.services");
 const {
   submitVoteService,
-  submitVoteNullService,
 } = require("../comittee_votes/comiitte_votes.service");
 
 const storage = multer.diskStorage({
@@ -38,8 +39,22 @@ const storage = multer.diskStorage({
   },
 });
 
+const storagePdf = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "pdf");
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + "-" + file.originalname);
+  },
+});
+
 const uploadFn = multer({
   storage: storage,
+  limits: { fieldSize: "256mb" },
+}).single("file");
+
+const uploadFnPdf = multer({
+  storage: storagePdf,
   limits: { fieldSize: "256mb" },
 }).single("file");
 
@@ -222,6 +237,32 @@ exports.uploadImage = async (req, res) => {
   }
 };
 
+exports.uploadPdf = async (req, res) => {
+  const { idea_id } = req.params;
+  try {
+    uploadFnPdf(req, res, async function (err) {
+      if (err instanceof multer.MulterError) {
+        send(res, false, err);
+      } else if (err) {
+        send(res, false, err);
+      }
+      // here we can add filename or path to the DB
+      let newPdf;
+      if (req.body.file) {
+        const pdfURL = req.body.file.split('/')
+        newPdf = `${process.env.NODE_SERVER_URL}/pdf/${pdfURL[4]}`;
+      } else {
+        newPdf = `${process.env.NODE_SERVER_URL}/pdf/${req.file.filename}`;
+      }
+      await addPdfService(idea_id, newPdf);
+      send(res, true);
+    });
+  } catch (err) {
+    console.error(err);
+    send(res, false, err);
+  }
+};
+
 exports.update = async (req, res) => {
   const { form, publish } = req.body;
   try {
@@ -252,6 +293,17 @@ exports.deleteIdeaImg = async (req, res) => {
   const { idea_id } = req.params;
   try {
     await deleteIdeaImgService(idea_id);
+    send(res, true, "testing");
+  } catch (err) {
+    console.error(err);
+    send(res, false, err);
+  }
+};
+
+exports.deleteIdeaPdf = async (req, res) => {
+  const { idea_id } = req.params;
+  try {
+    await deleteIdeaPdfService(idea_id);
     send(res, true, "testing");
   } catch (err) {
     console.error(err);
