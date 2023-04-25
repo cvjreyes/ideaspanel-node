@@ -86,8 +86,8 @@ exports.getAllValidatingService = async (user_id) => {
 
 exports.insertIdeaService = async (user_id, form) => {
   const [idea] = await pool.query(
-    "INSERT INTO ideas (user_id, title, description, anonymous) VALUES (?, ?, ?, ?)",
-    [user_id, form.title, form.description, form.anonymous]
+    "INSERT INTO ideas (user_id, title, description) VALUES (?, ?, ?, ?)",
+    [user_id, form.title, form.description]
   );
   return idea.insertId;
 };
@@ -101,13 +101,9 @@ exports.addPdfService = async (id, pdf) => {
 };
 
 exports.updateIdeaService = async (idea, publish) => {
-  let anonymous = 0;
-  if (idea.anonymous) {
-    anonymous = 1;
-  }
   await pool.query(
-    "UPDATE ideas SET title = ?, description = ?, anonymous = ?, sent_to_validate = ?, draft = ?, sent_to_validate_at = CURRENT_TIMESTAMP WHERE id = ?",
-    [idea.title, idea.description, anonymous, publish, !publish, idea.id]
+    "UPDATE ideas SET title = ?, description = ?, sent_to_validate = ?, draft = ?, sent_to_validate_at = CURRENT_TIMESTAMP WHERE id = ?",
+    [idea.title, idea.description, publish, !publish, idea.id]
   );
 };
 
